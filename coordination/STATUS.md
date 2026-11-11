@@ -17,14 +17,14 @@
 
 ## 當前 Codex 工作
 
-**[#8：階段 2 的官方 Context Files／生成來源鏈／停止能力唯讀核對](https://github.com/JFTai/Local-image-generation-agent-/issues/8)**
+**[#7：階段 2 官方 Context Files／生成來源鏈／停止能力唯讀核對](https://github.com/JFTai/Local-image-generation-agent-/issues/7)**
 
-- **GitHub 標籤**：發布時為 `codex-ready`；**尚未有 Codex 接手證據**，實際狀態以 Issue 最新留言／標籤為準。
-- **範圍**：只讀檢查本機 Hermes v0.22.5 API Server 的 context file 載入優先序與工作目錄、既有 A/B output/run/history/PNG 來源鏈、真正工具預算／取消機制；提出最小且可回滾的官方方案。
-- **上限**：新 Hermes session **0**、GPU **0**、ComfyUI POST /prompt **0**、圖片交付 **0**、新增自訂程式 **0**；只允許必要的唯讀檢查，不擴大為 Hermes 新 session。不得停止或替換使用者正常 ComfyUI `127.0.0.1:8188`，不得改設定、模型、Skill、工作流、參考圖。
-- **完成定義**：只讀證據與可行性報告 PASS，不等於階段 2 PASS。下一個 Hermes 新 session 或任何實際修復需另設任務並審查。
+- **唯一執行入口**：已確認 #7 重新開啟並標為 `codex-ready`；尚無 Codex 接手證據，須以最新 Issue 留言／標籤判定。不得同時執行 #8。
+- **範圍**：只讀核對本機 Hermes v0.22.5 API Server context file 的優先序與實際載入、既有 A/B output/run/history/PNG 的來源鏈、工具預算與真正取消能力；提出最小官方方案。
+- **上限**：新 Hermes session **0**、GPU **0**、ComfyUI POST /prompt **0**、圖片交付 **0**、新增自訂程式 **0**；Codex 唯讀 terminal 呼叫上限 **12**。不得干擾使用者正常 ComfyUI `127.0.0.1:8188`，不得改設定、模型、Skill、工作流、參考圖。
+- **驗收**：本 Issue 的唯讀調查 PASS 不代表階段 2 PASS；後續修復或 Hermes session 須另行審查。
 
-**防重複交接**：[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 與 #8 同時建立且範圍重複，已取消 #7 的 codex-ready 並以 duplicate 結案，**#8 是唯一有效的執行任務**；不得把 #7 結案當作技術 PASS。
+**防重複交接**：[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 與 [#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 幾乎同時建立，兩個審查程序競態曾將兩者都關閉。依 #8 的去重回報與較早建立順序，**#7 已重新開啟為唯一 codex-ready**，#8 保持 duplicate 關閉。[#7 更正留言](https://github.com/JFTai/Local-image-generation-agent-/issues/7#issuecomment-6789188628)。不得把任何 duplicate 結案當成技術 PASS。
 
 ## 近期驗收紀錄
 
