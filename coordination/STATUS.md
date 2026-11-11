@@ -25,17 +25,20 @@
 - [#6 四類來源與路徑](https://github.com/JFTai/Local-image-generation-agent-/issues/6)：**引導式** 12/12 原附件／工作副本／ComfyUI input 的實體 SHA 核對；兩筆生成 output 來源鏈 **0/2**，原附件出處有錯，terminal 14 次超出提示上限 8 次，WebUI 停止未取得 Gateway cancelled 證據；**PARTIAL**、1/1 session 用盡、`codex-review`。
 - [#8 官方控制面／Context Files 核查](https://github.com/JFTai/Local-image-generation-agent-/issues/8)：本機同版來源、A/B output 的 Codex 獨立核對已有證據；但當次 Hermes Gateway 8642 無 listener，無法驗證真正運行的 profile／CWD／capabilities。官方 stop 需確認最終 `cancelled`，沒有已證明的 terminal 硬性總呼叫上限。**PARTIAL，`codex-review`**；無新 Hermes session、GPU 或自訂程式。
 - [#9 Gateway Runtime 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/9)：既有隔離環境以官方方式啟動 Gateway **1 次**，在可連 localhost 環境 `/health`、`/v1/health` 均 HTTP 200；預設沙箱仍 HTTP 000，不代表服務停機。**健康子項 PASS**；`/v1/capabilities` 回 401／`gateway_auth_failed`，缺已授權本機 client，控制能力與硬工具上限仍未實測。整體 **PARTIAL，`codex-review`**；無新 Hermes session／模型推論／GPU／自訂程式。已見 [ChatGPT 審查](https://github.com/JFTai/Local-image-generation-agent-/issues/9#issuecomment-6789768636)。
+- [#10 官方認證 capabilities 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/10)：Codex 原生查核 Gateway loopback listener／TCP 可達，但沒有符合本次嚴格授權的既存 capabilities-only 官方認證 client；**GET 0/1，BLOCKED，`codex-blocked`**。沒有新 HTTP API、Hermes session、推論、GPU、ComfyUI 提交或服務變更；同版官方原始碼宣告 run/status/SSE/stop 不等於運行中 API 已認證驗證。[ChatGPT 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/10#issuecomment-6799557510)。
 - 以上成功不等於第二階段完整 PASS，也不等於「生成→VLM 自動審圖→必要修正／重生→模擬器回傳」已完成.
 
 ## 三、當前交接與授權門檻
 
-**目前唯一可接手任務：[#10｜一次官方認證 GET /v1/capabilities](https://github.com/JFTai/Local-image-generation-agent-/issues/10)**，2026-11-11 使用者已在 ChatGPT 明確授權使用**本機已配置的官方認證方式**進行一次本機唯讀查詢；已建立 open、`codex-ready` Issue。**GitHub ready 不等於 Codex 已接手或查詢已執行**，以最新 Issue 留言與標籤為準。任務明定：不得讀取、顯示或上傳金鑰；不得修改設定；最多一次 GET、不重試、不查其他 API；不啟動服務、Hermes session、模型推論、GPU 或 ComfyUI 提交。若沒有既有且可安全使用的官方認證 client，直接 BLOCKED，不能自行建立 client 或讀取秘密。
+**目前無可安全接手的 `codex-ready`／`codex-in-progress` 任務。** [#10](https://github.com/JFTai/Local-image-generation-agent-/issues/10) 已由 Codex 接手並回報 **BLOCKED，`codex-blocked`**：使用者已授權使用本機**已配置的官方認證方式**進行一次 `GET /v1/capabilities`，但沒有找到能在不接觸憑證、不建立新 client／程式的情況下，僅發出該單一 GET 的現有官方 client。**實際 GET 0/1，授權未消耗但也不可自行放寬**；目前只有 listener／TCP 可達證據，沒有本輪已認證 API 回應。
 
-[#9](https://github.com/JFTai/Local-image-generation-agent-/issues/9) 已回報並審查為 PARTIAL，維持 `codex-review`，**不擴大其原授權**。[#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 也維持 PARTIAL；[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 已關閉 duplicate。即使 #10 回 HTTP 200，也不能把 `stopping` 當 `cancelled` 或把提示中的工具次數當硬上限；仍不得擅自啟動新 Hermes 推論 session／GPU／ComfyUI 提交。階段 2 保持 PARTIAL。
+已核對 Hermes v0.22.5 官方 API Server 與 peer CLI：靜態來源列有 `run_status`／`run_events_sse`／`run_stop`，但 `peer run` 會接著提交新推論，不能作為安全 capabilities-only 查詢。**下一步需要使用者提供既有安全官方 client 的名稱與操作方式；若沒有，需另行批准一項明確的新認證操作方案**。不得要求使用者貼出金鑰，也不得自行讀取／拼裝 Bearer header 或擴大權限。無安全入口就維持 BLOCKED，不建立重複的 `codex-ready`。
+
+[#9](https://github.com/JFTai/Local-image-generation-agent-/issues/9) 仍為 PARTIAL／`codex-review`；[#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 仍為 PARTIAL／`codex-review`；[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 已關閉 duplicate。**階段 2 仍 PARTIAL**。即使日後 capabilities 回 HTTP 200，也不代表硬性 terminal 工具呼叫上限或真正安全停止已驗證，不能因此擅自啟動新的 Hermes 推論 session、GPU 或 ComfyUI 提交。
 
 ## 四、交接、環境與安全
 
-- GitHub Issue 讀寫與本機 Codex 接手交接已在歷次 #1/#2/#4/#5/#6 回合核對；Codex 已在 #9 留接手與 PARTIAL 回報，ChatGPT 已審查；沒有新的 ready 任務，不能聲稱已有下一件 Codex 工作。
+- GitHub Issue 讀寫與本機 Codex 接手交接已在歷次 #1/#2/#4/#5/#6 回合核對；Codex 已在 #9 留 PARTIAL 回報，#10 留 BLOCKED 回報，ChatGPT 已分別審查；目前沒有 ready/in-progress 任務，不能宣稱已安排下一件 Codex 執行工作。
 - ChatGPT 每小時檢查更新與審查後續；`codex-ready` 才是本機 Codex 排程可接手入口。監控不代表任務自動完成，回報須附實際 Issue/commit。
 - **禁止佔用使用者標準 127.0.0.1:8188 的受限白名單 ComfyUI**。不得擅自停止日常 ComfyUI、變更全域設定、讀取 Open WebUI 帳密／憑證、公開私人圖片／本機路徑。
 - 後續所有 GPU、生圖、模型／VLM 替換、安裝、修改工作流及自訂程式，都需獨立明確授權；按 [PROTOCOL.md](PROTOCOL.md) 控制任務權限。
@@ -43,4 +46,6 @@
 
 ## 五、下一階段決策
 
-先取得使用者對現有官方 API 認證方式進行**一次本機唯讀 capabilities 檢查**的明確授權，並確認不需暴露秘密、修改設定或新增程式；無法安全做到就保持 BLOCKED 並報缺口。其後仍須證實安全停止控制，不得無條件啟動新的 Hermes 推論回合。完成安全前提後，才安排有新變因、明確上限的階段 2 驗證 A/B 生成 output 來源鏈。若需要新專案指引檔、改 Gateway 設定或新增程式，先提精確差異、影響及回退，待使用者批准。**不要為了維持 codex-ready 而重複派同類失敗任務。**
+**#10 已完成審查且因認證 client 缺口 BLOCKED**；不再重複派相同 GET 測試。使用者的原授權仍限「既有官方認證方式、一次 GET、不讀取／顯示／上傳金鑰、不改設定、不模型推論／GPU」。若沒有符合條件的現成 client，需等待使用者另行批准精確不同方案，不能自行建立新 client、讀取秘密或執行 `peer run`。官方原始碼的靜態 capabilities 與歷史 `cancelled` 只能當設計／歷史證據，不可冒充本輪 Gateway 實測。
+
+完成安全的官方認證控制面及真正停止保障後，才可另案安排具有新變因、明確上限的階段 2 A/B 生成 output 來源鏈自主驗證。任何新專案指引、Gateway 設定、自訂程式或 GPU 操作均需個別授權。**不得為了維持 codex-ready 而重複派工。**
