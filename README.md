@@ -2,6 +2,7 @@
 
 本倉庫作為 ChatGPT 與本機 Codex 的任務及進度交接入口。它不是本機執行環境的完整備份。
 
+- [八階段開發藍圖](coordination/ROADMAP_8_STAGES.md)
 - [協作規則](coordination/PROTOCOL.md)
 - [目前狀態](coordination/STATUS.md)
 - [建立任務](https://github.com/JFTai/Local-image-generation-agent-/issues/new/choose)
