@@ -17,12 +17,14 @@
 
 ## 當前 Codex 工作
 
-**[#7：階段 2 的官方 Context Files／生成來源鏈／停止能力唯讀核對](https://github.com/JFTai/Local-image-generation-agent-/issues/7)**
+**[#8：階段 2 的官方 Context Files／生成來源鏈／停止能力唯讀核對](https://github.com/JFTai/Local-image-generation-agent-/issues/8)**
 
 - **GitHub 標籤**：發布時為 `codex-ready`；**尚未有 Codex 接手證據**，實際狀態以 Issue 最新留言／標籤為準。
 - **範圍**：只讀檢查本機 Hermes v0.22.5 API Server 的 context file 載入優先序與工作目錄、既有 A/B output/run/history/PNG 來源鏈、真正工具預算／取消機制；提出最小且可回滾的官方方案。
-- **上限**：新 Hermes session **0**、GPU **0**、ComfyUI POST /prompt **0**、圖片交付 **0**、新增自訂程式 **0**；Codex 唯讀 terminal 呼叫最多 **12**。不得停止或替換使用者正常 ComfyUI `127.0.0.1:8188`，不得改設定、模型、Skill、工作流、參考圖。
+- **上限**：新 Hermes session **0**、GPU **0**、ComfyUI POST /prompt **0**、圖片交付 **0**、新增自訂程式 **0**；只允許必要的唯讀檢查，不擴大為 Hermes 新 session。不得停止或替換使用者正常 ComfyUI `127.0.0.1:8188`，不得改設定、模型、Skill、工作流、參考圖。
 - **完成定義**：只讀證據與可行性報告 PASS，不等於階段 2 PASS。下一個 Hermes 新 session 或任何實際修復需另設任務並審查。
+
+**防重複交接**：[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 與 #8 同時建立且範圍重複，已取消 #7 的 codex-ready 並以 duplicate 結案，**#8 是唯一有效的執行任務**；不得把 #7 結案當作技術 PASS。
 
 ## 近期驗收紀錄
 
