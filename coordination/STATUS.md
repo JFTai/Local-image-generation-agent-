@@ -1,50 +1,44 @@
-# 目前狀態
+# 本地生圖 Agent｜目前狀態
 
-更新日期：**2026-11-11（台灣時間）**。本頁是專案當前執行面板；長期階段依據 [八階段藍圖](ROADMAP_8_STAGES.md)，任務授權依據 [PROTOCOL.md](PROTOCOL.md)。**本頁與路線圖本身不授權 GPU，也不表示 Hermes 自動讀取了 GitHub 文件。**
+**更新：2026-11-11（台灣時間）**。長期方向與每階段驗收門檻見 [八階段正式藍圖](ROADMAP_8_STAGES.md)；GitHub Issue 才是 Codex 可執行的工作授權，本文不是本機指令。
 
-## 八階段里程碑
+## 一、總目標與目前階段
 
-| 階段 | 狀態 | 下一個通關要求 |
-|---|---|---|
-| 1 原生文生圖閉環 | 基礎 PASS（P01） | 後續回歸須證實無提醒交付，不能推論整體自主 |
-| **2 人物、場景與參考素材管理** | **PARTIAL／目前主線** | A/B 來源四類及 output→run→history→workflow→SHA 由 Hermes 自主核對；工具停止與回合限制可靠 |
-| 3 多種生圖工作流自主選擇 | 未正式驗收 | 既有完整工作流、schema／依賴與獲授權情境的選擇證據 |
-| 4 多角色／跨場景一致性 | 未正式驗收 | 人物與場景參考跨圖的可重現對照 |
-| 5 自動審圖／有限次修正 | 未正式驗收 | 真實 VLM 審圖、改動及有限重試的證據 |
-| 6 劇情模擬器 LLM 正式委派 | 未正式驗收 | 模擬器主動發起並接收圖像／失敗 |
-| 7 長時間自主運作／故障恢復 | 未正式驗收 | 中斷、超時、恢復、避免重複提交 |
-| 8 完整模擬器情境驗收 | 未開始 | 完整端到端情境矩陣及使用者驗收 |
+最終目標：劇情模擬器 LLM／Open WebUI 提出需求 → Hermes 生圖 Agent 選正確素材及既有工作流 → ComfyUI 生成 → 自動審圖 → 必要時有限次修正／重生 → 回傳 Open WebUI 及模擬器 LLM。
 
-## 當前 Codex 工作
+| 八階段 | 進度 | 判定範圍 |
+| --- | --- | --- |
+| 1 原生文生圖閉環 | **基礎 PASS** | P01 新圖與官方 comfy-cli 同回合成功；不代表全自主交付 |
+| 2 人物、場景與參考素材管理 | **PARTIAL，現在進行** | A/B 來源分類與跨 session output 來源鏈仍有缺口 |
+| 3 自主選擇及操作多種生圖工作流 | 尚未正式驗收 | 不先行提交 GPU |
+| 4 多角色與跨場景一致性 | 尚未正式驗收 | 依賴可信來源與工作流能力 |
+| 5 自動審圖與必要時重新生成 | 尚未正式驗收 | 後續比較真正具視覺能力的 VLM 及可靠推論模型 |
+| 6 正式連接劇情模擬器 LLM | 尚未正式驗收 | 必須由劇情 LLM 自主委派，不只是人工在 WebUI 生圖 |
+| 7 長時間自主運作與故障恢復 | 尚未正式驗收 | 基礎安全／8188 保護為全程共通 |
+| 8 完整模擬器情境測試與正式完成 | 尚未開始 | 須模擬器端到端證據與使用者確認 |
 
-**[#7：階段 2 官方 Context Files／生成來源鏈／停止能力唯讀核對](https://github.com/JFTai/Local-image-generation-agent-/issues/7)**
+## 二、已驗證成果與未完成缺口
 
-- **唯一執行入口**：已確認 #7 重新開啟並標為 `codex-ready`；尚無 Codex 接手證據，須以最新 Issue 留言／標籤判定。不得同時執行 #8。
-- **範圍**：只讀核對本機 Hermes v0.22.5 API Server context file 的優先序與實際載入、既有 A/B output/run/history/PNG 的來源鏈、工具預算與真正取消能力；提出最小官方方案。
-- **上限**：新 Hermes session **0**、GPU **0**、ComfyUI POST /prompt **0**、圖片交付 **0**、新增自訂程式 **0**；Codex 唯讀 terminal 呼叫上限 **12**。不得干擾使用者正常 ComfyUI `127.0.0.1:8188`，不得改設定、模型、Skill、工作流、參考圖。
-- **驗收**：本 Issue 的唯讀調查 PASS 不代表階段 2 PASS；後續修復或 Hermes session 須另行審查。
+- [#3 圖片交付](https://github.com/JFTai/Local-image-generation-agent-/issues/3)：兩張已存在 PNG 在已登入 Open WebUI 的真實 DOM 顯示、HTTP 200、SHA 一致；仍需一次 Markdown 格式提醒，**完全自主交付 PARTIAL**。原 2/2 次驗收額度已用盡，`codex-review`。
+- [#4 Hermes 工具診斷](https://github.com/JFTai/Local-image-generation-agent-/issues/4)：唯讀診斷 PASS、`codex-done` 已結案。
+- [#5 新 session 跨對話來源找回](https://github.com/JFTai/Local-image-generation-agent-/issues/5)：找到工作流、prompt_id／history／PNG，但原附件及工作副本分類不準；**PARTIAL**、2/2 次用盡、`codex-review`。
+- [#6 四類來源與路徑](https://github.com/JFTai/Local-image-generation-agent-/issues/6)：**引導式** 12/12 原附件／工作副本／ComfyUI input 的實體 SHA 核對；兩筆生成 output 來源鏈 **0/2**，原附件出處有錯，terminal 14 次超出提示上限 8 次，WebUI 停止未取得 Gateway cancelled 證據；**PARTIAL**、1/1 session 用盡、`codex-review`。
+- 以上成功不等於第二階段完整 PASS，也不等於「生成→VLM 自動審圖→必要修正／重生→模擬器回傳」已完成。
 
-**防重複交接**：[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 與 [#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 幾乎同時建立，兩個審查程序競態曾將兩者都關閉。依 #8 的去重回報與較早建立順序，**#7 已重新開啟為唯一 codex-ready**，#8 保持 duplicate 關閉。[#7 更正留言](https://github.com/JFTai/Local-image-generation-agent-/issues/7#issuecomment-6789188628)。不得把任何 duplicate 結案當成技術 PASS。
+## 三、唯一目前可執行任務
 
-## 近期驗收紀錄
+**[#8｜八階段 S2：官方 Context Files、停止控制與來源鏈的唯讀核查](https://github.com/JFTai/Local-image-generation-agent-/issues/8)**：open、`codex-ready`。這是階段 2 可信來源與可執行停止能力的準備工作；**新 Hermes session = 0、GPU = 0、ComfyUI POST /prompt = 0、新增自訂程式 = 0**。優先研究本機 Gateway 的 Context File 何時載入、output→run→history→workflow→SHA 的官方欄位、以及 stop/turn budget 是否真正生效；提出必要的最小修改供後續授權，不在 #8 自行改設定或新建本機指引。
 
-| Issue | 已核對結果 | 資源／限制 |
-|---|---|---|
-| [#1](https://github.com/JFTai/Local-image-generation-agent-/issues/1)、[#2](https://github.com/JFTai/Local-image-generation-agent-/issues/2) | GitHub 交接與 ChatGPT→Codex 往返測試完成 | 已結案 |
-| [#3](https://github.com/JFTai/Local-image-generation-agent-/issues/3) | Open WebUI 既有圖片 DOM 顯示 PASS；無提醒完整自主交付 PARTIAL | 2/2 測試已用完，codex-review |
-| [#4](https://github.com/JFTai/Local-image-generation-agent-/issues/4) | Hermes API Server 工具診斷完成 | codex-done |
-| [#5](https://github.com/JFTai/Local-image-generation-agent-/issues/5) | 跨對話來源找回 PARTIAL | 2/2 session 用完，codex-review |
-| [#6](https://github.com/JFTai/Local-image-generation-agent-/issues/6) | 引導式 12/12 原附件／工作副本／input SHA 相符；output 來源鏈 0/2、工具 14 次超出提示 8 次、Stop 後未證實取消；[ChatGPT 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/6#issuecomment-6789156770) | 1/1 session 用完，codex-review，GPU 0／自訂程式 0 |
+同時建立的 [#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 是重複任務，**已關閉為 duplicate**，不得接手。#8 是唯一 canonical 交接任務；兩者的創建／去重是 GitHub 文件操作，不是 Codex 本機 GPU 或 Hermes session 執行證據。
 
-## 交接與執行事實
+## 四、交接、環境與安全
 
-- 指定儲存庫：JFTai/Local-image-generation-agent-。GitHub 連接器**已實際建立 Issues 與寫入審查留言**；不是僅有讀取權限。
-- GitHub 只存放協作規則、去敏證據、階段藍圖及任務；**不是**本機工作流／圖片／模型／完整執行環境備份。
-- Codex 是否接手、任務是否執行，以 `codex-in-progress`／接手留言與正式回報判定；GitHub 已建立 Issue 不代表 Codex 已執行。ChatGPT 每小時監控啟用不保證每次執行成功。
-- 任務入口只接受 JFTai 作者、open、`codex-ready`；已存在 ready／in-progress 時不建立競爭 Issue；codex-review 先審查後派下一個**明確授權的零 GPU／無自訂程式**小任務。
-- **使用者日常 ComfyUI 8188 不得被受限 Custom Nodes 白名單實例長期佔用或擅自終止。**
-- 仍待驗證的關鍵缺口：Hermes 真正自主新對話找回、輸出鏈核對、實際停止保證、無需提醒的圖片交付、後續自動審圖及模擬器 LLM 委派。禁止把基礎 P01 成功或 Codex 手動核對當成整體閉環完成。
+- GitHub Issue 讀寫與本機 Codex 接手交接已在歷次 #1/#2/#4/#5/#6 回合核對；新的 #8 **只有 GitHub ready，尚未因此宣稱 Codex 已接手**。
+- ChatGPT 每小時檢查更新與審查後續；`codex-ready` 才是本機 Codex 排程可接手入口。監控不代表任務自動完成，回報須附實際 Issue/commit。
+- **禁止佔用使用者標準 127.0.0.1:8188 的受限白名單 ComfyUI**。不得擅自停止日常 ComfyUI、變更全域設定、讀取 Open WebUI 帳密／憑證、公開私人圖片／本機路徑。
+- 後續所有 GPU、生圖、模型／VLM 替換、安裝、修改工作流及自訂程式，都需獨立明確授權；按 [PROTOCOL.md](PROTOCOL.md) 控制任務權限。
+- 本倉庫**僅存公開去敏交接資料**，不放原始圖片、私人參考、工作流完整本機資產、虛擬環境或原始執行日誌。
 
-## 相關研究
+## 五、下一階段決策
 
-官方 [Hermes Context Files](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files/)／[API Server](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server/)，上游 [中斷案例 #84207](https://github.com/NousResearch/hermes-agent/issues/84207)、[#65298](https://github.com/NousResearch/hermes-agent/issues/65298)，[Reddit Hermes 長期記憶經驗](https://www.reddit.com/r/hermesagent/comments/1wjm700/i_tried_5_ways_to_give_my_hermes_agent_longterm/) 與 [Unix & Linux 相對路徑討論](https://unix.stackexchange.com/questions/639383/concatenating-files-from-a-directory-using-cat-gives-no-such-file-or-directory)。外部案例需比對本機 v0.22.5，不是本機根因證明。
+先完成 #8 的唯讀原生控制面核查並審查報告。若確定可用官方 Context Files 與真正可停止的執行方式，才設計新的、有明確上限的階段 2 測試驗證 A/B 生成 output 來源鏈。若需要新專案指引檔、改 Gateway 設定或新增程式，先提精確差異、影響及回退，待使用者批准。**不要為了維持 codex-ready 而重複派同類失敗任務。**
