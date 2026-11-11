@@ -29,9 +29,9 @@
 
 ## 三、當前交接與授權門檻
 
-**目前沒有 `codex-ready` 或 `codex-in-progress` 任務**；[#9](https://github.com/JFTai/Local-image-generation-agent-/issues/9) 已回報並審查為 PARTIAL，維持 `codex-review`，**不擴大其原授權**。[#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 也維持 PARTIAL；[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 為已關閉 duplicate，不重新派工。
+**目前唯一可接手任務：[#10｜一次官方認證 GET /v1/capabilities](https://github.com/JFTai/Local-image-generation-agent-/issues/10)**，2026-11-11 使用者已在 ChatGPT 明確授權使用**本機已配置的官方認證方式**進行一次本機唯讀查詢；已建立 open、`codex-ready` Issue。**GitHub ready 不等於 Codex 已接手或查詢已執行**，以最新 Issue 留言與標籤為準。任務明定：不得讀取、顯示或上傳金鑰；不得修改設定；最多一次 GET、不重試、不查其他 API；不啟動服務、Hermes session、模型推論、GPU 或 ComfyUI 提交。若沒有既有且可安全使用的官方認證 client，直接 BLOCKED，不能自行建立 client 或讀取秘密。
 
-已確認的最小缺口是：Gateway 健康可達，但 `GET /v1/capabilities` 需 Bearer 驗證，既有授權 client 未確認可用。**等待使用者明確授權**以現有官方認證方式進行一次本機唯讀 capabilities 查詢；不讀取／列印／上傳／修改憑證，不降低驗證、不新增程式或修改全域設定。若沒有安全可用的既有 client，先報最小官方方案及影響，取得批准後才建立新 Issue。即使 capabilities 成功，也不能把 `stopping` 當 `cancelled` 或把提示中的工具上限當硬停止。此階段**不得啟動新 Hermes 推論 session／GPU／ComfyUI 提交**。
+[#9](https://github.com/JFTai/Local-image-generation-agent-/issues/9) 已回報並審查為 PARTIAL，維持 `codex-review`，**不擴大其原授權**。[#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 也維持 PARTIAL；[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 已關閉 duplicate。即使 #10 回 HTTP 200，也不能把 `stopping` 當 `cancelled` 或把提示中的工具次數當硬上限；仍不得擅自啟動新 Hermes 推論 session／GPU／ComfyUI 提交。階段 2 保持 PARTIAL。
 
 ## 四、交接、環境與安全
 
