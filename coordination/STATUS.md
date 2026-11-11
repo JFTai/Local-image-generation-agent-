@@ -24,17 +24,18 @@
 - [#5 新 session 跨對話來源找回](https://github.com/JFTai/Local-image-generation-agent-/issues/5)：找到工作流、prompt_id／history／PNG，但原附件及工作副本分類不準；**PARTIAL**、2/2 次用盡、`codex-review`。
 - [#6 四類來源與路徑](https://github.com/JFTai/Local-image-generation-agent-/issues/6)：**引導式** 12/12 原附件／工作副本／ComfyUI input 的實體 SHA 核對；兩筆生成 output 來源鏈 **0/2**，原附件出處有錯，terminal 14 次超出提示上限 8 次，WebUI 停止未取得 Gateway cancelled 證據；**PARTIAL**、1/1 session 用盡、`codex-review`。
 - [#8 官方控制面／Context Files 核查](https://github.com/JFTai/Local-image-generation-agent-/issues/8)：本機同版來源、A/B output 的 Codex 獨立核對已有證據；但當次 Hermes Gateway 8642 無 listener，無法驗證真正運行的 profile／CWD／capabilities。官方 stop 需確認最終 `cancelled`，沒有已證明的 terminal 硬性總呼叫上限。**PARTIAL，`codex-review`**；無新 Hermes session、GPU 或自訂程式。
+- [#9 Gateway Runtime 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/9)：既有隔離環境以官方方式啟動 Gateway **1 次**，在可連 localhost 環境 `/health`、`/v1/health` 均 HTTP 200；預設沙箱仍 HTTP 000，不代表服務停機。**健康子項 PASS**；`/v1/capabilities` 回 401／`gateway_auth_failed`，缺已授權本機 client，控制能力與硬工具上限仍未實測。整體 **PARTIAL，`codex-review`**；無新 Hermes session／模型推論／GPU／自訂程式。已見 [ChatGPT 審查](https://github.com/JFTai/Local-image-generation-agent-/issues/9#issuecomment-6789768636)。
 - 以上成功不等於第二階段完整 PASS，也不等於「生成→VLM 自動審圖→必要修正／重生→模擬器回傳」已完成.
 
-## 三、唯一目前可執行任務
+## 三、當前交接與授權門檻
 
-**[#9｜八階段 S2：Hermes Gateway 8642 Runtime 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/9)**：open、`codex-ready`。目標是檢查／安全按需啟動**既有 Hermes Gateway 本身**，用實際健康回應和適用的官方唯讀 capabilities 核對執行時可用性。**不啟動新 Hermes session、不模型推論、不 GPU、不生圖、不修改設定、不新增自訂程式；不得干擾 ComfyUI 8188**。此次先確認運行條件，不能冒充後續 A/B 來源找回驗收已通過。
+**目前沒有 `codex-ready` 或 `codex-in-progress` 任務**；[#9](https://github.com/JFTai/Local-image-generation-agent-/issues/9) 已回報並審查為 PARTIAL，維持 `codex-review`，**不擴大其原授權**。[#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 也維持 PARTIAL；[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 為已關閉 duplicate，不重新派工。
 
-[#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 已由 Codex 回報 PARTIAL 並完成 ChatGPT 審查，維持 `codex-review`，不擴增原任務測試額度。[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 是重複任務，已以 duplicate 關閉。#9 為現在唯一正式可執行交接；是否接手需以 Codex 最新留言核對。
+已確認的最小缺口是：Gateway 健康可達，但 `GET /v1/capabilities` 需 Bearer 驗證，既有授權 client 未確認可用。**等待使用者明確授權**以現有官方認證方式進行一次本機唯讀 capabilities 查詢；不讀取／列印／上傳／修改憑證，不降低驗證、不新增程式或修改全域設定。若沒有安全可用的既有 client，先報最小官方方案及影響，取得批准後才建立新 Issue。即使 capabilities 成功，也不能把 `stopping` 當 `cancelled` 或把提示中的工具上限當硬停止。此階段**不得啟動新 Hermes 推論 session／GPU／ComfyUI 提交**。
 
 ## 四、交接、環境與安全
 
-- GitHub Issue 讀寫與本機 Codex 接手交接已在歷次 #1/#2/#4/#5/#6 回合核對；新的 #9 **已寫入 GitHub，尚未因此宣稱 Codex 已接手**。
+- GitHub Issue 讀寫與本機 Codex 接手交接已在歷次 #1/#2/#4/#5/#6 回合核對；Codex 已在 #9 留接手與 PARTIAL 回報，ChatGPT 已審查；沒有新的 ready 任務，不能聲稱已有下一件 Codex 工作。
 - ChatGPT 每小時檢查更新與審查後續；`codex-ready` 才是本機 Codex 排程可接手入口。監控不代表任務自動完成，回報須附實際 Issue/commit。
 - **禁止佔用使用者標準 127.0.0.1:8188 的受限白名單 ComfyUI**。不得擅自停止日常 ComfyUI、變更全域設定、讀取 Open WebUI 帳密／憑證、公開私人圖片／本機路徑。
 - 後續所有 GPU、生圖、模型／VLM 替換、安裝、修改工作流及自訂程式，都需獨立明確授權；按 [PROTOCOL.md](PROTOCOL.md) 控制任務權限。
@@ -42,4 +43,4 @@
 
 ## 五、下一階段決策
 
-先完成 #9 的 Gateway Runtime 預檢與審查。即使 Gateway 健康，若仍無法證實真正可停止的執行方式，下一件任務應先補足安全控制，不能無條件啟動新的 Hermes 推論回合。完成安全前提後，才安排有新變因、明確上限的階段 2 驗證 A/B 生成 output 來源鏈。若需要新專案指引檔、改 Gateway 設定或新增程式，先提精確差異、影響及回退，待使用者批准。**不要為了維持 codex-ready 而重複派同類失敗任務。**
+先取得使用者對現有官方 API 認證方式進行**一次本機唯讀 capabilities 檢查**的明確授權，並確認不需暴露秘密、修改設定或新增程式；無法安全做到就保持 BLOCKED 並報缺口。其後仍須證實安全停止控制，不得無條件啟動新的 Hermes 推論回合。完成安全前提後，才安排有新變因、明確上限的階段 2 驗證 A/B 生成 output 來源鏈。若需要新專案指引檔、改 Gateway 設定或新增程式，先提精確差異、影響及回退，待使用者批准。**不要為了維持 codex-ready 而重複派同類失敗任務。**
