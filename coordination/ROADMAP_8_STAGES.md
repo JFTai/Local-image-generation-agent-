@@ -2,13 +2,16 @@
 
 **版本：2026-11-11。** 依照「Harness問題分析」先前提出的**八個階段名稱與原始順序**制定本藍圖；下面的詳細驗收門檻及狀態是按現有實測**重新設計**，不宣稱為當年逐字原文。
 
+> **2026-11-12 使用者最新開發指示（優先於 11/11 對測試門檻的過度保守解讀）**：必須以 Open WebUI → Hermes Agent → 原有完整 ComfyUI 工作流生圖 → 圖片回傳 Open WebUI 的真實操作作為日常主線；Codex 在生圖測試**執行當時**觀察 Hermes，遇錯先修、修不成先查同版官方文件／GitHub／社群案例，再無解就回報並繼續其他項目；ChatGPT 與 Codex 透過 GitHub Issue 指令與回報。API `/v1`、`health`、`capabilities` 及 Sandbox 只是查錯工具/環境概念，並非先完成才能生圖的全局門檻。**[#11](https://github.com/JFTai/Local-image-generation-agent-/issues/11) 是新的端到端功能測試任務**。這段更新不修改過往任務額度及歷史測試結果。\
+> 原則仍是保留現有完整工作流、官方 Hermes ComfyUI Skill + comfy-cli、不增加自訂程式及保護日常 ComfyUI。
+
 ## 0. 核心目標、架構與不可變限制
 
 **最終目標**：劇情模擬器 LLM 或 Open WebUI 接收生圖需求 → 生圖 Agent 理解需求、找到正確人物／場景參考 → 選擇原有完整工作流 → 經 ComfyUI 生成 → 自動審圖 → 必要時有限次修正／重生 → 圖片與結果回傳劇情模擬器 LLM 及 Open WebUI。
 
 **架構原則**：Open WebUI 作聊天介面、Hermes Agent 作生圖代理，優先官方 Hermes ComfyUI Skill、comfy-cli 與既有 ComfyUI 工作流。禁止在未獨立論證與批准前新增自訂程式、資料庫、Publisher、MCP、Harness 或常駐服務。**不得把多份原始完整工作流擅自簡化成一份。**
 
-**本檔不是操作授權**。單一 Issue 才能明確授權 GPU／ComfyUI POST /prompt、模型更換、安裝、修改環境及新工作流。未寫上限時 GPU 預設 0；任何使用者未授權的模型切換、登入憑證存取、Python inline、常駐服務均不應執行。
+**本檔不是無限操作授權**。使用者 2026-11-12 已明確要求實際生圖回傳與八階段測試；單一 Issue 記載該次功能測試的情境與 GPU 提交上限即可執行，不必再因獨立認證端點被 BLOCKED 而停工。未授權的模型切換、登入憑證讀取、自訂 Python 程式、常駐服務或覆蓋既有工作流仍不得擅自執行。
 
 **本機共用環境**：使用者一般 ComfyUI 是 127.0.0.1:8188。Codex 應先檢查真正的 API 健康與啟動方式；不得用限制 Custom Nodes 白名單的測試實例佔用使用者日常 8188，不得終止使用者服務。需隔離連接埠時先取得授權。當次按需啟動與健康檢查可行，但跨回合 PID 消失本身不代表故障。
 
@@ -25,12 +28,12 @@
 - **目標**：新 Hermes session 可靠辨識、選取及取得原附件、工作副本、ComfyUI input、生成 output；同時能找回工作流、Prompt ID、保存的 history 及其關聯。
 - **完成門檻**：A 人物、B 黑湖等既有素材由 Hermes **自行**在新 session 找到；原件／副本／服務 input／生成 output 角色分類正確、真實路徑可讀、SHA 與 run/history/workflow 相互對應；不使用舊 final 答案或 Codex 代尋。若有明示來源入口，須稱「引導式」，不得稱完全自主發現。
 - **現況：PARTIAL，本輪主線**。B 場景參考 P02 曾成功；A 參考人物測試未全部通過；[#5](https://github.com/JFTai/Local-image-generation-agent-/issues/5) 跨對話來源分類失敗。[#6](https://github.com/JFTai/Local-image-generation-agent-/issues/6) 引導式核對 12/12 原附件／工作副本／input，卻未核對 2 筆生成 output；原附件曾被錯稱為 Hermes 對話附件，14 次 terminal 超出提示 8 次，停止操作未取得真正 Gateway cancelled 證據。**不得把 #6 判為整階段 PASS。**
-- **下一步**：先核對 Hermes 官方 Context Files 在本機 API Server/Gateway 的真正生效條件、來源 checks→run→history→PNG 的關聯、實際停止／工具預算；再安排有明確變因的最小驗收。可使用既有 `source-verification.json` 的 `checks[].path`、`expected_sha256`、`compiled.json`、`run.json`、`history.json`；不猜資料夾或建自訂 Registry。
+- **下一步**：以 #11 的 Open WebUI → Hermes → ComfyUI → 回圖實測先恢復主線，Codex 同步觀察；接著直接用 A 人物與 B 黑湖參考執行階段 2 驗收，有實際障礙時才調查 Context Files、來源 checks→run→history→PNG、停止工具。可使用既有 `source-verification.json` 的 `checks[].path`、`expected_sha256`、`compiled.json`、`run.json`、`history.json`；不猜資料夾或建自訂 Registry。
 
 ### 階段 3｜自主選擇及操作多種生圖工作流
 - **目標**：依場景需求選用、參數化原有完整文生圖／圖生圖／人物參考／Inpaint／Outpaint／多人物等工作流，透過官方 schema/dependencies 驗證。
 - **完成門檻**：為各已授權情境提供工作流選擇理由、保留原工作流完整節點、記錄實際修改與生成證據；缺模型或節點明列 BLOCKED，不宣稱可用。
-- **現況：未正式驗收**。階段 2 未過，不擅自開展 GPU 工作；允許唯讀規劃。
+- **現況：未正式驗收**。可在獨立具體功能 Issue 的合理生成範圍內測試原有工作流；階段 2 的不足應記作相關風險，不是全面禁止測試。
 
 ### 階段 4｜多角色與跨場景一致性
 - **目標**：正確選用人物三視圖與場景參考，維持角色身份、髮型、服裝、比例、風格、多人位置及跨場景連續性。
@@ -66,14 +69,14 @@
 - [#4 Hermes 工具診斷](https://github.com/JFTai/Local-image-generation-agent-/issues/4)：codex-done，已結案。
 - [#5 跨對話來源找回](https://github.com/JFTai/Local-image-generation-agent-/issues/5)：PARTIAL，2/2 新 session 用完，待審。
 - [#6 四類來源與路徑](https://github.com/JFTai/Local-image-generation-agent-/issues/6)：PARTIAL；引導式 12/12 參考核對，但 output 0/2、停止／工具次數問題，1/1 session 用完，待審。
-- **當前下一步**：針對 #6 做版本化的官方 Context Files／來源可信入口／實際取消及工具預算研究，先不新增自訂程式或盲目重跑。後續活動的 `codex-ready` Issue 與最新結果以 [STATUS.md](STATUS.md) 為準；本檔不是可執行任務。
+- **當前下一步**：[#11](https://github.com/JFTai/Local-image-generation-agent-/issues/11) 真正由 Open WebUI 委派 Hermes 使用既有 P01 生圖、回傳並顯示；Codex 在執行中觀察，之後階段 2 A/B 人物場景與來源繼續。#10 單一認證檢查 BLOCKED 不是整體主線關卡。後續活動的 `codex-ready` Issue 與最新結果以 [STATUS.md](STATUS.md) 為準。
 
 ## 3. 交接規則、審查與後續方向
 
 - 以 [PROTOCOL.md](PROTOCOL.md) 為任務授權門；只接 JFTai 建立、open、`codex-ready` 的明確 Issue；已有 in-progress 不再競爭接手，建議同時最多一項活動 ready。
-- 每回合審查：**階段定位與依賴 → 已核實證據 vs 推測 → 最小可用官方解 → GPU/工具額度及可執行停止條件 → 不干擾 8188、私有素材／憑證 → 有效驗收與回退 → 是否允許下一件安全任務**。任一關不過則縮為唯讀調查或停止。
+- 每回合審查：**階段定位與依賴 → 真實功能操作與已核實證據 → 官方修復方法 → 記錄 GPU／工具使用及停止結果 → 不干擾 8188、私有素材／憑證 → 有效驗收與下一件功能任務**。問題部分 BLOCKED 就保留且研究網路案例；其他獨立可測項目繼續，不能把單一診斷失敗當全局禁止。
 - 路線圖只管理方向；`STATUS.md` 管理當前進度；Issue 是交接與 Codex 回報的唯一執行入口。GitHub 上的文件**不代表 Hermes Gateway 自動載入**，須以本機實際 session 驗證 context file 的路徑、時點與優先序。
-- 每小時 ChatGPT 監控：新實質結果須先審查，再於既已授權的零 GPU、官方優先、不新增自訂程式範圍內至多建立一件不重複的 ready Issue；涉及 GPU、模型、憑證或擴大權限時先取得使用者批准。不把排程已啟用冒充 Codex 已接手。
+- 每小時 ChatGPT 監控：有新實質結果就審查及續派不重複的具體功能 Issue。使用者已授權正常生圖測試，應為每個 Issue 設合理 GPU 提交額度；額外模型安裝／切換、讀取憑證、自訂程式或重大變更仍應單獨批准。GitHub 每小時輪詢不能冒充本機 Codex 在執行中的即時觀察。
 
 ## 4. 參考資料
 
