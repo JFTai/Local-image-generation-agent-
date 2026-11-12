@@ -28,20 +28,20 @@
 - [#11 Open WebUI→Hermes→P01 新生圖→回傳](https://github.com/JFTai/Local-image-generation-agent-/issues/11)：**整體 PARTIAL，`codex-review`**。2026-11-12 21:10–21:20 Codex 在測試中觀察：Open WebUI v0.11.0 一條 P01 指令確實送達 Hermes；Hermes 自行使用**官方 Skill 的 `run_workflow.py`** 提交完整 10 節點 P01（**1/2 ComfyUI 提交**），history success，Prompt ID `37951822-b0ec-4387-b78e-887a5aaf6811`，2048×2048 PNG SHA-256 `e05e6b6bb262db399ba73a5e35902bbfa285889176bc093e312a653a9a62076a`。但正向提示未加入指定韓漫風格，**同一 WebUI 對話沒有載入新圖**（範例 img naturalWidth=0）。前端 Stop 後 Hermes 工具仍執行，最後官方 `gateway stop --interrupt` 返回 0、Gateway listener 消失，ComfyUI queue 空；工具結果 26 筆。這不是完整自主 PASS。[ChatGPT 審查](https://github.com/JFTai/Local-image-generation-agent-/issues/11#issuecomment-6825032645)。
 - [#12 既有 PNG 回圖修復](https://github.com/JFTai/Local-image-generation-agent-/issues/12)：**整體 FAIL，已審查**。2026-11-12 21:43:57 Gateway 啟動時先恢復 #11 中斷的 Hermes 舊回合，#12 唯一新 WebUI 指令未證明被新 Hermes 回合接收；原 PNG 的 history／SHA／HTTP 核對成功，但原對話 DOM 仍無目標圖。**重大執行偏差：#12 明定 ComfyUI 新提交 0，實際舊回合卻自行啟動 comfy.exe 並產生 1 筆未授權新提交與新圖**，Prompt ID `92624ad7-560e-486d-bcc0-f8b96a75ae2d`，21:46:16 history success。官方 `gateway stop --interrupt` 後 listener 消失、ComfyUI queue 清空，但未證明下次啟動不會重播。未回圖、不可算全自主 PASS。[ChatGPT FAIL 審查](https://github.com/JFTai/Local-image-generation-agent-/issues/12#issuecomment-6826670200)。
 - [#13 舊回合重播原生機制](https://github.com/JFTai/Local-image-generation-agent-/issues/13)：**整體 PARTIAL，`codex-review`，已由 ChatGPT 審查**。Codex 唯讀核對 7 個本機檔案與 Hermes v0.22.5 官方來源一致，確認 #11/#12 路由持久化 `resume_pending=true`、`resume_reason=shutdown_timeout`、`suspended=false`；恢復標記 21:46:13，預設 3,600 秒窗口 22:46:13 到期。但本機實際生效時間窗、最後 history 時間及 DB admission/FIFO 未驗證，不能保證下一次 Gateway 啟動或新訊息不再續跑。**未找到停機下只終止特定舊回合且保留歷史的官方入口**；本輪 Gateway／新推論／GPU／ComfyUI 提交均 0，沒有修復實作。[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/13#issuecomment-6827606615)。
-- [#10 官方認證 capabilities 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/10)：Codex 原生查核 Gateway loopback listener／TCP 可達，但沒有符合本次嚴格授權的既存 capabilities-only 官方認證 client；**GET 0/1，BLOCKED，`codex-blocked`**。沒有新 HTTP API、Hermes session、推論、GPU、ComfyUI 提交或服務變更；同版官方原始碼宣告 run/status/SSE/stop 不等於運行中 API 已認證驗證。[ChatGPT 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/10#issuecomment-6799557510)。
+- [#14 A 人物／B 黑湖完整工作流唯讀對應](https://github.com/JFTai/Local-image-generation-agent-/issues/14)：**本 Issue PASS，已由 ChatGPT 審查**（[審查](https://github.com/JFTai/Local-image-generation-agent-/issues/14#issuecomment-6830093779)）。Codex 本機核對 A/B 來源各 6/6 SHA、原完整 workflow A `M04-P03.json` 15/15 節點與 B `M03-P02.json` 17/17 節點、既有 history／PNG SHA；已裝 Skill 5.1.0 `extract_schema.py`／`check_deps.py --strict` 回報依賴 ready。A/B 的既有生成歷史可追溯，**本輪沒有 Hermes 新回合、Gateway 啟動、GPU 或 ComfyUI 新提交**；不能當作自主來源選取、全流程回圖或階段 2 整體 PASS。B 的 input 副檔名 .png 與實際 JPEG 格式不一致，但歷史曾成功載入，未在本輪更改。\n- [#10 官方認證 capabilities 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/10)：Codex 原生查核 Gateway loopback listener／TCP 可達，但沒有符合本次嚴格授權的既存 capabilities-only 官方認證 client；**GET 0/1，BLOCKED，`codex-blocked`**。沒有新 HTTP API、Hermes session、推論、GPU、ComfyUI 提交或服務變更；同版官方原始碼宣告 run/status/SSE/stop 不等於運行中 API 已認證驗證。[ChatGPT 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/10#issuecomment-6799557510)。
 - 以上成功不等於第二階段完整 PASS，也不等於「生成→VLM 自動審圖→必要修正／重生→模擬器回傳」已完成.
 
 ## 三、當前主線：Open WebUI → Hermes → ComfyUI → 回圖
 
 **依 2026-11-12 使用者最新明確指示，主線改回實際操作：** Open WebUI 送出自然語言需求 → Hermes Agent 使用既有官方 Skill／comfy-cli 及使用者完整 ComfyUI 工作流生圖 → 在同一 Open WebUI 對話顯示新圖；Codex **測試進行時**觀察 Hermes 真正執行的步驟、在可回退範圍內修正問題，查官方／GitHub／社群實例；ChatGPT 讀取 GitHub 回報並接續測試八階段。
 
-**目前唯一新派工：[Issue #14／A 人物與 B 黑湖參考到既有完整 ComfyUI 工作流節點的唯讀對應](https://github.com/JFTai/Local-image-generation-agent-/issues/14)**，`codex-ready`，待 Codex 接手。#13 已由 Codex 回報 PARTIAL 並完成 ChatGPT 審查；舊回合恢復旗標已定位，但尚未有可證明不重播的官方終止方法。為避免再次在無新指令時誤觸 GPU，先進行**不同變因的階段 2 工作流參考節點對應**（A/B 來源 SHA、完整 workflow、輸入節點／連線、模型／Custom Nodes 依賴）。這不是重做 #5/#6 的來源分類，且不需啟動 Gateway 或 GPU。完成後選定最小可驗證的真實 Open WebUI→Hermes 參考生圖任務；另行尋找既有官方防重播／終止方法。
+**目前唯一新派工：[Issue #15／Open WebUI→Hermes→黑湖 B 17 節點完整 P02 參考生圖→回圖](https://github.com/JFTai/Local-image-generation-agent-/issues/15)**，已建立 `codex-ready`，尚待 Codex 接手。#14 的 A/B 唯讀核對已 PASS 並正式審查；下一步直接回到**真實功能**，由 Hermes 自主提交一張新的黑湖參考圖、交付到同一 Open WebUI 對話。#12 曾發生 Gateway 重啟自動續跑舊回合而額外提交 GPU，#13 尚未證明終止；因此 #15 只針對這個**已發生的實際故障**先查同版原生 freshness／歷史時間與待送狀態，能確認不重播才啟動實測。**不是**重新要求通過 capabilities／health／Sandbox；無法排除就記 BLOCKED，其他工作繼續。#15 允許在條件符合時由 Hermes 新提交 B 工作流**最多 1 張新圖（1/1）**，不允許無限重試、修改原始 workflow 或新增程式。
 
 [#10](https://github.com/JFTai/Local-image-generation-agent-/issues/10) 的單獨已認證 `GET /v1/capabilities` 是**非主線診斷 BLOCKED**，其原有嚴格授權與 0/1 使用量保持不變；**不再將其列為整體 Open WebUI/Hermes/ComfyUI 工作的強制開工門檻**。診斷用的 `/v1`、health、Sandbox 是既有工具／執行位置概念，不是新架構，也不是必裝或必測的新元件。真正遇到阻礙時就具體處理當前故障，不能因一個無關端點阻止其他測試。
 
 ## 四、交接、環境與安全
 
-- GitHub Issue 讀寫與本機 Codex 接手交接已驗證；#11 PARTIAL、#12 FAIL、#13 PARTIAL 均有 Codex 回報與 ChatGPT 審查。**#14 為當前唯一 `codex-ready`**；Codex 尚未留下 #14 接手證據，不能宣稱已開始執行。GitHub 每小時輪詢不能冒充本機 Codex 的即時監控。
+- GitHub Issue 讀寫與本機 Codex 接手交接已驗證；#11 PARTIAL、#12 FAIL、#13 PARTIAL 均有 Codex 回報與 ChatGPT 審查。**#14 已有 Codex 回報及 ChatGPT PASS 審查；#15 為當前唯一 `codex-ready`**，尚未有 #15 接手證據，不能宣稱本輪已生圖或即時觀察。GitHub 每小時輪詢不能冒充本機 Codex 的即時監控。
 - ChatGPT 每小時讀取 Codex 回報、審查後續並續派；`codex-ready` 是本機 Codex 交接入口。排程不應因單一診斷 Issue 被 BLOCKED 就停用；只有實質結果與直接證據才能判為完成。
 - **禁止佔用使用者標準 127.0.0.1:8188 的受限白名單 ComfyUI**。不得擅自停止日常 ComfyUI、變更全域設定、讀取 Open WebUI 帳密／憑證、公開私人圖片／本機路徑。
 - 使用者 2026-11-12 已明確要求進行**實際生圖及回傳測試**；#11 授權 2 次，實際使用 1 次 ComfyUI 提交；**#12 原授權新生圖 0，實際因舊回合自動續跑意外發生 1 次未授權 GPU 提交**，不能誤記為 0。#13、#14 各自為零 GPU 的不同子任務，不延長 #11/#12 額度。後續具體功能 Issue 可明列合理 GPU 上限；不得擅自下載／更換模型、安裝套件、增加自訂程式、覆蓋原完整工作流或暴露憑證。
@@ -49,7 +49,8 @@
 
 ## 五、下一階段決策
 
-**#13 已完成唯讀調查並正式判 PARTIAL，並非重播故障已修復。** 依本機同版程式及外部 Hermes [#46934](https://github.com/NousResearch/hermes-agent/issues/46934)、[#58933](https://github.com/NousResearch/hermes-agent/issues/58933) 等案例，啟動時恢復與新訊息進入時恢復不一定相同；外部案例版本不同，不當成使用者本機根因。時間窗過期不代表可以無條件重新啟動 Gateway，特別是 #12 已實際多生一張。
+**#14 已完成唯讀核對，A/B 來源、原完整工作流節點與依賴已可追溯，但這不是 Hermes 自主回圖。** 依最新 #14 報告，優先 B 黑湖 `M03-P02.json` 17 節點、既有參考相對名稱，生成 512×768 新圖。已發布 [#15](https://github.com/JFTai/Local-image-generation-agent-/issues/15) 作為**下一次真正的 Open WebUI→Hermes→ComfyUI→回圖實測**，上限 1 次新 ComfyUI 提交，Codex 在執行時觀察。
 
-**當前 #14** 先完成 A 人物／B 黑湖參考進入原有完整 workflow 的來源與節點對應，使用既有官方 Skill 工具唯讀核對，不新增程式、不動 8188、不重啟 Gateway。完成後依結果設計一次真正 Open WebUI→Hermes 參考生圖＋回圖測試；舊回合防重播需找到可驗證、可回退的原生方法後才重啟相同 session。若一項無法解決就留 BLOCKED 並研究同版官方／網路案例，不停止其他八階段工作。
+**只處理真正的重播故障，不加無關關卡**：#12 的舊回合在沒有新指令時額外生圖；#13 找到 `resume_pending` 和預設 3600 秒 freshness，卻未確認本機實際生效值、history 時間及待送狀態。#15 在 Gateway 啟動前以同版官方現有方式核對，若無法排除重播則不啟動、記具體 BLOCKED；不修改 session DB、全域配置或工作流。已核對官方 v0.22.5 原始碼，`HERMES_AUTO_CONTINUE_FRESHNESS=0` 或負值**不會**關閉恢復，反而取消時間限制。實際功能測試完成後再處理 A 人物自主參考找回、跨圖一致性、VLM 審圖及模擬器 LLM 委派。
 
+無關的 #10 capabilities-only BLOCKED 不再是全系統開工門檻；不能因個別故障停止其他八階段工作。
