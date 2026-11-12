@@ -1,6 +1,6 @@
 # 本地生圖 Agent｜目前狀態
 
-**更新：2026-11-11（台灣時間）**。長期方向與每階段驗收門檻見 [八階段正式藍圖](ROADMAP_8_STAGES.md)；GitHub Issue 才是 Codex 可執行的工作授權，本文不是本機指令。
+**更新：2026-11-12（台灣時間）**。長期方向與每階段驗收門檻見 [八階段正式藍圖](ROADMAP_8_STAGES.md)；GitHub Issue 才是 Codex 可執行的工作授權，本文不是本機指令。
 
 ## 一、總目標與目前階段
 
@@ -28,24 +28,25 @@
 - [#10 官方認證 capabilities 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/10)：Codex 原生查核 Gateway loopback listener／TCP 可達，但沒有符合本次嚴格授權的既存 capabilities-only 官方認證 client；**GET 0/1，BLOCKED，`codex-blocked`**。沒有新 HTTP API、Hermes session、推論、GPU、ComfyUI 提交或服務變更；同版官方原始碼宣告 run/status/SSE/stop 不等於運行中 API 已認證驗證。[ChatGPT 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/10#issuecomment-6799557510)。
 - 以上成功不等於第二階段完整 PASS，也不等於「生成→VLM 自動審圖→必要修正／重生→模擬器回傳」已完成.
 
-## 三、當前交接與授權門檻
+## 三、當前主線：Open WebUI → Hermes → ComfyUI → 回圖
 
-**目前無可安全接手的 `codex-ready`／`codex-in-progress` 任務。** [#10](https://github.com/JFTai/Local-image-generation-agent-/issues/10) 已由 Codex 接手並回報 **BLOCKED，`codex-blocked`**：使用者已授權使用本機**已配置的官方認證方式**進行一次 `GET /v1/capabilities`，但沒有找到能在不接觸憑證、不建立新 client／程式的情況下，僅發出該單一 GET 的現有官方 client。**實際 GET 0/1，授權未消耗但也不可自行放寬**；目前只有 listener／TCP 可達證據，沒有本輪已認證 API 回應。
+**依 2026-11-12 使用者最新明確指示，主線改回實際操作：** Open WebUI 送出自然語言需求 → Hermes Agent 使用既有官方 Skill／comfy-cli 及使用者完整 ComfyUI 工作流生圖 → 在同一 Open WebUI 對話顯示新圖；Codex **測試進行時**觀察 Hermes 真正執行的步驟、在可回退範圍內修正問題，查官方／GitHub／社群實例；ChatGPT 讀取 GitHub 回報並接續測試八階段。
 
-已核對 Hermes v0.22.5 官方 API Server 與 peer CLI：靜態來源列有 `run_status`／`run_events_sse`／`run_stop`，但 `peer run` 會接著提交新推論，不能作為安全 capabilities-only 查詢。**下一步需要使用者提供既有安全官方 client 的名稱與操作方式；若沒有，需另行批准一項明確的新認證操作方案**。不得要求使用者貼出金鑰，也不得自行讀取／拼裝 Bearer header 或擴大權限。無安全入口就維持 BLOCKED，不建立重複的 `codex-ready`。
+**目前可執行任務：[Issue #11／端到端生圖及回傳實測](https://github.com/JFTai/Local-image-generation-agent-/issues/11)**，已發布 `codex-ready`，待 Codex 留接手證據。這是階段 1 回歸以及進入階段 2 前的**聯調基線**，不是重跑 #3/#5/#6 的舊測試。Issue #11 已獨立列明本輪使用者直接授權的實際生成範圍與防無限重試額度；只代表該 Issue 可執行，不自動授權其他模型或工作流的生成。
 
-[#9](https://github.com/JFTai/Local-image-generation-agent-/issues/9) 仍為 PARTIAL／`codex-review`；[#8](https://github.com/JFTai/Local-image-generation-agent-/issues/8) 仍為 PARTIAL／`codex-review`；[#7](https://github.com/JFTai/Local-image-generation-agent-/issues/7) 已關閉 duplicate。**階段 2 仍 PARTIAL**。即使日後 capabilities 回 HTTP 200，也不代表硬性 terminal 工具呼叫上限或真正安全停止已驗證，不能因此擅自啟動新的 Hermes 推論 session、GPU 或 ComfyUI 提交。
+[#10](https://github.com/JFTai/Local-image-generation-agent-/issues/10) 的單獨已認證 `GET /v1/capabilities` 是**非主線診斷 BLOCKED**，其原有嚴格授權與 0/1 使用量保持不變；**不再將其列為整體 Open WebUI/Hermes/ComfyUI 工作的強制開工門檻**。診斷用的 `/v1`、health、Sandbox 是既有工具／執行位置概念，不是新架構，也不是必裝或必測的新元件。真正遇到阻礙時就具體處理當前故障，不能因一個無關端點阻止其他測試。
 
 ## 四、交接、環境與安全
 
-- GitHub Issue 讀寫與本機 Codex 接手交接已在歷次 #1/#2/#4/#5/#6 回合核對；Codex 已在 #9 留 PARTIAL 回報，#10 留 BLOCKED 回報，ChatGPT 已分別審查；目前沒有 ready/in-progress 任務，不能宣稱已安排下一件 Codex 執行工作。
-- ChatGPT 每小時檢查更新與審查後續；`codex-ready` 才是本機 Codex 排程可接手入口。監控不代表任務自動完成，回報須附實際 Issue/commit。
+- GitHub Issue 讀寫與本機 Codex 接手交接已驗證；#9、#10 已完成回報與審查，#11 為新的功能實測 ready。**Codex 未留接手回條前不可宣稱已開始觀察或生圖**；即時觀察需由執行中的本機 Codex 實際做到並回報，GitHub 定時讀取不能冒充毫秒級即時監控。
+- ChatGPT 每小時讀取 Codex 回報、審查後續並續派；`codex-ready` 是本機 Codex 交接入口。排程不應因單一診斷 Issue 被 BLOCKED 就停用；只有實質結果與直接證據才能判為完成。
 - **禁止佔用使用者標準 127.0.0.1:8188 的受限白名單 ComfyUI**。不得擅自停止日常 ComfyUI、變更全域設定、讀取 Open WebUI 帳密／憑證、公開私人圖片／本機路徑。
-- 後續所有 GPU、生圖、模型／VLM 替換、安裝、修改工作流及自訂程式，都需獨立明確授權；按 [PROTOCOL.md](PROTOCOL.md) 控制任務權限。
+- 使用者 2026-11-12 已明確要求進行**實際生圖及回傳測試**；本輪可用 GPU 已界定於 #11 的 P01 流程與提交額度。後續每階段測試應透過具體 Issue 明列內容及適當資源範圍，不能用一般診斷阻礙任務。不得擅自下載／更換模型、安裝套件、增加自訂程式、覆蓋原完整工作流或暴露憑證。
 - 本倉庫**僅存公開去敏交接資料**，不放原始圖片、私人參考、工作流完整本機資產、虛擬環境或原始執行日誌。
 
 ## 五、下一階段決策
 
-**#10 已完成審查且因認證 client 缺口 BLOCKED**；不再重複派相同 GET 測試。使用者的原授權仍限「既有官方認證方式、一次 GET、不讀取／顯示／上傳金鑰、不改設定、不模型推論／GPU」。若沒有符合條件的現成 client，需等待使用者另行批准精確不同方案，不能自行建立新 client、讀取秘密或執行 `peer run`。官方原始碼的靜態 capabilities 與歷史 `cancelled` 只能當設計／歷史證據，不可冒充本輪 Gateway 實測。
+**先執行 #11 真正端到端生圖與前端回傳。** Codex 在現有 Windows 原環境使用 Open WebUI、Hermes Agent、官方 Skill／comfy-cli、原有完整 ComfyUI 工作流；檢查服務是否在線，必要時按原先成功的方式啟動，於測試期間觀察行為。能修復的實際整合錯誤就在可逆、零自訂程式的範圍內修復；不能修則查官方文件及 GitHub／Reddit／技術論壇實例，再不行便報告 BLOCKED/PARTIAL，轉到其他有價值的工作。
 
-完成安全的官方認證控制面及真正停止保障後，才可另案安排具有新變因、明確上限的階段 2 A/B 生成 output 來源鏈自主驗證。任何新專案指引、Gateway 設定、自訂程式或 GPU 操作均需個別授權。**不得為了維持 codex-ready 而重複派工。**
+驗收須區分 Hermes 自主提交新圖、ComfyUI 執行成功、Hermes 自主回傳、Open WebUI 真實顯示。下一件依八階段規劃**人物／黑湖參考及來源一致性**測試，持續直到模擬器 LLM 主動委派生圖與收圖。與主線無關的 #10 Auth GET 診斷不再是先決條件，也不能以它阻止已明確授權的功能測試。
+
