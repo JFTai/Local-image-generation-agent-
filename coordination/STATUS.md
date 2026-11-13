@@ -43,13 +43,13 @@
 
 **2026-11-12 使用者最新指示仍優先**：Open WebUI 操作 Hermes，以官方 Skill／comfy-cli 執行原完整工作流並回傳圖片，Codex 在實測期間觀察，ChatGPT 透過 GitHub 審查與續派。遇錯先在原有工具可逆範圍修復，再查同版官方及社群案例，仍無解保留證據並測其他功能；不新增自訂程式或無關診斷 gate。
 
-**最新派工：[Issue #23](https://github.com/JFTai/Local-image-generation-agent-/issues/23) 為唯一 `codex-ready`，尚待 Codex 接手。** #22 已正式 **FAIL**：新 Open WebUI 指令確實進 Hermes，但 A/B 完整工作流與來源未被自主找出，2 次 skill_view 未轉成官方 schema/deps 實際驗證，11 次 terminal 後對話顯示錯誤；0 GPU、原工作流 SHA 不變。#21 自主取圖 FAIL；#18 僅完整 URL 引導式回圖 PASS，#19 新生圖成功但未自主回圖。
+**最新執行：[Issue #23](https://github.com/JFTai/Local-image-generation-agent-/issues/23) 為唯一 `codex-in-progress`，Codex 已留言接手；尚無修復或功能回歸結果。** #22 已正式 **FAIL**：新 Open WebUI 指令確實進 Hermes，但 A/B 完整工作流與來源未被自主找出，2 次 skill_view 未轉成官方 schema/deps 實際驗證，11 次 terminal 後對話顯示錯誤；0 GPU、原工作流 SHA 不變。#21 自主取圖 FAIL；#18 僅完整 URL 引導式回圖 PASS，#19 新生圖成功但未自主回圖。
 
 #23 針對 #20–#22 **已發生的 Hermes 工具錯誤**，先由 Codex 比對本機實際 terminal／skill_view 命令、參數、退出碼、回條、CWD 與官方同版工具行為；**只有找到並實施可逆的具體修復變因**，才允許 1 次新的 Open WebUI→Hermes 官方 Skill 人物工作流唯讀功能回歸，**0 ComfyUI/GPU 新提交**。沒有可修變因就保留 BLOCKED，不盲目重跑；這是主線功能修復，不是新增 health／capabilities／Sandbox gate。#10 capabilities 401 與 #16 GPU TDR 均不作其他獨立測試的全局 gate。
 
 ## 四、交接、環境與安全
 
-- GitHub Issue 讀寫與本機 Codex 接手交接已驗證；#11 PARTIAL、#12 FAIL、#13 PARTIAL 均有 Codex 回報與 ChatGPT 審查。**#14 PASS、#15 FAIL、#16 BLOCKED、#17 FAIL、#18 引導式回圖 PASS、#19 新生圖 PARTIAL、#20/#21 自主找回 FAIL、#22 自主工作流選擇 FAIL 均已審查；#23 是唯一新 `codex-ready`**，尚未有 #23 接手證據，不能宣稱完全自主回圖或同回合閉環已修復。GitHub 每小時輪詢不能冒充本機 Codex 的即時監控。
+- GitHub Issue 讀寫與本機 Codex 接手交接已驗證；#11 PARTIAL、#12 FAIL、#13 PARTIAL 均有 Codex 回報與 ChatGPT 審查。**#14 PASS、#15 FAIL、#16 BLOCKED、#17 FAIL、#18 引導式回圖 PASS、#19 新生圖 PARTIAL、#20/#21 自主找回 FAIL、#22 自主工作流選擇 FAIL 均已審查；#23 為唯一 `codex-in-progress`**，已見 [Codex 接手留言](https://github.com/JFTai/Local-image-generation-agent-/issues/23#issuecomment-6841903416)，尚無 #23 修復或回歸完成證據，不能宣稱完全自主回圖或同回合閉環已修復。GitHub 每小時輪詢不能冒充本機 Codex 的即時監控。
 - ChatGPT 每小時讀取 Codex 回報、審查後續並續派；`codex-ready` 是本機 Codex 交接入口。排程不應因單一診斷 Issue 被 BLOCKED 就停用；只有實質結果與直接證據才能判為完成。
 - **禁止佔用使用者標準 127.0.0.1:8188 的受限白名單 ComfyUI**。不得擅自停止日常 ComfyUI、變更全域設定、讀取 Open WebUI 帳密／憑證、公開私人圖片／本機路徑。
 - 使用者 2026-11-12 已明確要求進行**實際生圖及回傳測試**；#11 授權 2 次，實際使用 1 次 ComfyUI 提交；**#12 原授權新生圖 0，實際因舊回合自動續跑意外發生 1 次未授權 GPU 提交**，不能誤記為 0。#13、#14 各自為零 GPU 的不同子任務，不延長 #11/#12 額度。後續具體功能 Issue 可明列合理 GPU 上限；不得擅自下載／更換模型、安裝套件、增加自訂程式、覆蓋原完整工作流或暴露憑證。
