@@ -85,3 +85,8 @@
 
 - [#36](https://github.com/JFTai/Local-image-generation-agent-/issues/36)：Codex 本機完成 **1 GPU／0 重試**，Hermes 自主選完整 P03 15 節點、兩份來源 HTTP 200／SHA、三項官方預檢 exit 0、history success、1536×2048 PNG，兩人可區分；但**閱讀提示錯寫 P03 原檔，真正提交副本仍為站立揮手**，情境不符，原檔保護 FAIL。Codex 已以測前 SHA 相符備份復原並核對 P01/P02/P03/P06/P08 原 SHA 不變。整體 **PARTIAL**；[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/36#issuecomment-6883277065)。不宣稱 WebUI DOM、跨場景一致性或 VLM PASS。
 - [#37](https://github.com/JFTai/Local-image-generation-agent-/issues/37)：新 `codex-ready`，針對**只修改 P03 雙人物工作副本並在提交前核對 print-prompt 的『坐著閱讀、非站立揮手』語義**做原生修復回歸；1 Hermes 回合、最多 1 GPU、0 生成重試，原檔誤寫立即停止且 0 GPU。不新增程式／模型／Chrome 操作，保留 8188。#24 WebUI 同對話顯圖仍獨立 BLOCKED，#10 capabilities 非全局 gate。
+
+## 2026-11-15 04:36 新進度｜#37 審查及 #38 續派
+
+- [#37](https://github.com/JFTai/Local-image-generation-agent-/issues/37)：Codex 本機 **1/1 GPU、0 重試**；Hermes 自主從八份可信候選選出 P03、只修改當輪副本，三項官方預檢 exit 0，實際 history 與預覽同為兩人坐著閱讀；1536×2048 PNG、history success，Codex 目視兩人確實坐著讀書。**修復 #36 原檔誤寫與舊提示誤提交，C/D PASS**。但 Hermes 未實際計算兩份素材 SHA，只有一份素材 HTTP 200（curl exit 23）、第二份未查；Codex 事後獨立查兩份不能冒充 Hermes 自主。Hermes 最終 SaveImage type 誤報 input（實際 output）；徽章細節仍有差異。**整體 PARTIAL**，原工作流 SHA 與 8188 保留，0 自訂程式／Chrome；[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/37#issuecomment-6883841958)。沒有 Open WebUI DOM、VLM 或跨場景驗收。
+- [#38](https://github.com/JFTai/Local-image-generation-agent-/issues/38)：新 `codex-ready`，**0 GPU／0 工作流修改**，讓 Hermes 在單一新回合自行核對 #37 兩份參考素材的實際 SHA、各自 ComfyUI input HTTP，以及既有 history SaveImage 的 type=output、PNG SHA。Codex 執行中觀察並獨立複核，不再生成相同情境。#24 WebUI 顯圖仍獨立 BLOCKED，#10 capabilities 非全局 gate。
