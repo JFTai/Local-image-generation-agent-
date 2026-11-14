@@ -58,6 +58,13 @@ ChatGPT 端也需要這個倉庫的 GitHub 寫入工具。只有閱讀權限，�
 - **任務出錯**：可在該 Issue 允許範圍內修復、對照已發生錯誤後有限重試；仍無法解決就研究網路真實案例並交代版本差異，再無法修就單獨標 BLOCKED，其他獨立項目照做。不可為了無關診斷項目使整個排程停用。
 - **誠實驗收**：把「Codex 代操作」與「Hermes 自主完成」分開，附真實 Open WebUI 對話顯圖、ComfyUI 新輸出及來源關聯；只下載或顯示一張舊圖片不算全流程 PASS。
 
+## 2026-11-14 使用者瀏覽器隔離規則（後續所有 UI 測試適用）
+
+- **Codex 不得接管使用者正在使用的 Chrome**：包括現有視窗/分頁、Chrome Profile、登入 Cookie、擴充功能、Chrome extension Browser Use、Chrome remote debugging/CDP；不得為測試關閉、重新啟動或改動使用者 Chrome。Windows Computer Use 不得被當成操作使用者 Chrome 的替代途徑。
+- Open WebUI 前端驗收只使用 **ChatGPT/Codex 桌面程式內建 Browser 的獨立狀態**（官方 Windows Ctrl+Shift+B；https://help.openai.com/en/articles/20001277-using-the-built-in-browser-in-the-chatgpt-desktop-app ）。先確認既有 Open WebUI 服務與實際 port/URL 可用，再從內建 Browser 開啟；不得把 localhost 無法連線歸因於瀏覽器而忽略服務未啟動。
+- 若執行環境僅有 CLI/IDE、無法使用內建 Browser、站點權限不足或獨立登入需要使用者互動，**在原 Issue 回報具體 BLOCKED**；不可自行改用 Chrome、讀取使用者密碼或更動登入設定。官方桌面內建 Browser 與 Chrome 是不同介面，應在回報中註明實際工具。
+- 本規則不增加 health/capabilities/Sandbox 門檻，不撤銷既有已授權的功能/GPU 上限；只是使用者工作環境保護。原工作流、ComfyUI 8188、私有素材與服務設定仍須保留。
+
 ## 八階段藍圖與並行派工防護
 
 1. **階段定位**：每個新的開發 Issue 必須標明屬於 [八階段藍圖](ROADMAP_8_STAGES.md) 的哪一階段、前置驗收與目前證據；正式未過關的後續階段只允許唯讀規劃，不能擅自提交 GPU。當前活動及成果以 [STATUS.md](STATUS.md) 與即時 GitHub Issue 為準；功能性回歸測試可跨階段驗證共同整合路徑，不因階段 2 PARTIAL 而全面禁止已授權的生圖。
