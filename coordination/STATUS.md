@@ -1,6 +1,6 @@
 # 本地生圖 Agent｜目前狀態
 
-**更新：2026-11-14（台灣時間）**。長期方向與每階段驗收門檻見 [八階段正式藍圖](ROADMAP_8_STAGES.md)；GitHub Issue 才是 Codex 可執行的工作授權，本文不是本機指令。
+**更新：2026-11-15（台灣時間）**。長期方向與每階段驗收門檻見 [八階段正式藍圖](ROADMAP_8_STAGES.md)；GitHub Issue 才是 Codex 可執行的工作授權，本文不是本機指令。
 
 ## 一、總目標與目前階段
 
@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | 1 原生文生圖閉環 | **基礎 PASS** | P01 新圖與官方 comfy-cli 同回合成功；不代表全自主交付 |
 | 2 人物、場景與參考素材管理 | **PARTIAL，現在進行** | A/B 來源分類與跨 session output 來源鏈仍有缺口 |
-| 3 自主選擇及操作多種生圖工作流 | **引導式 P06/P08 生成 PARTIAL** | #33 Hermes 自行驗證 22 節點 P08、單次生成並回報輸出，底部 11px 接縫已消除；左右側縫仍在，自主選工作流與 Open WebUI 交付未過 |
+| 3 自主選擇及操作多種生圖工作流 | **PARTIAL（有限自主選擇與 CLI 生成已實測）** | #33 P08 官方自驗與生成成功；#34/#35 Hermes 在候選中自主選 P06，#35 來源三欄查詢與單次生成 PASS，但提交前 print-prompt FAIL、局部品質 PARTIAL；WebUI 顯圖未過 |
 | 4 多角色與跨場景一致性 | 尚未正式驗收 | 依賴可信來源與工作流能力 |
 | 5 自動審圖與必要時重新生成 | 尚未正式驗收 | 後續比較真正具視覺能力的 VLM 及可靠推論模型 |
 | 6 正式連接劇情模擬器 LLM | 尚未正式驗收 | 必須由劇情 LLM 自主委派，不只是人工在 WebUI 生圖 |
@@ -48,7 +48,8 @@
 - [#32 修正過早停止並驗證 P08 22 節點單次生成](https://github.com/JFTai/Local-image-generation-agent-/issues/32)：**整體 PARTIAL，已正式審查**（[本機回報](https://github.com/JFTai/Local-image-generation-agent-/issues/32#issuecomment-6878239774)、[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/32#issuecomment-6879110580)）。Hermes 自行完成 22 節點暫存副本（羽化 16＋ImageCrop 1536×853），但未完成官方自驗／提交，18 次模型呼叫、CLI exit 1，**0 GPU／0 PNG**。#33 後續回查確認 #32 達 18/18 迭代預算；當時 watchdog timeout 訊息僅表示等待上限 120→900 秒，未記錄 provider 請求逾時。Codex 事後 schema/deps/print-prompt PASS 不等於 Hermes 自驗。
 - [#33 P08 22 節點自驗與單次 Outpaint](https://github.com/JFTai/Local-image-generation-agent-/issues/33)：**功能 A/B/C/E/F PASS、品質 D PARTIAL；整體 PARTIAL，已正式審查**（[Codex 實測](https://github.com/JFTai/Local-image-generation-agent-/issues/33#issuecomment-6879349870)、[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/33#issuecomment-6880085299)）。Hermes 1 新 CLI 回合、19 模型/18 工具，**自行**完成 P08 22 節點副本及官方 schema、strict deps、print-prompt 三項 exit 0；**1/1 GPU 提交、0 重試**，Prompt ID `57c68391-e473-4d36-af17-bb62dc736e04`，history success 113.516 秒、3 PNG。合成圖 1536×853、2,722,021 bytes、SHA `544aaad947bb13c3c5cf3f9cbf38b153aa39b106d76fdce8d1c54ce5b2fb782a`；底部 11px 水平接縫消失，左右側縫仍可見。中央 1280×853 共 1,091,840 像素 RGB24 完全一致（限 FFmpeg 同條件）；Hermes 自己等待並回報三輸出識別，Codex 執行中監看。原 8188、工作流 SHA 保留，queue 空，0 自訂程式，未用 WebUI/DOM/VLM。**不得稱 S3 全自主或 S5 審圖 PASS**。
 - [#34 自然語言局部修圖自主選工作流](https://github.com/JFTai/Local-image-generation-agent-/issues/34)：**整體 PARTIAL，Codex 已實測、ChatGPT 已正式審查**（[本機報告](https://github.com/JFTai/Local-image-generation-agent-/issues/34#issuecomment-6880409843)、[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/34#issuecomment-6881045368)）。Hermes 在不被告知檔名、只給可信候選根目錄下自行列舉 P06/P08/P09/P12/P13，依局部遮罩、不擴畫布選 P06，**限定候選自主選擇 PASS**；但三次 `/view` HEAD 漏傳 `subfolder` 均 404，來源與官方自驗 PARTIAL、**0 POST／0 GPU／0 PNG／0 WebUI DOM**。Codex 停止後以同三份引用的 URL 編碼 `filename`＋`subfolder` 查詢皆 200，**僅 Codex 事後核對**。本輪 1 Hermes 回合、31 模型／31 工具，官方停止後 8642 程序退出、原工作流 SHA 與 8188/queue/history 不變，0 自訂程式。原 1/1 回合額度已用，不重跑相同條件。
-- [#35 `/view` 正確子資料夾查詢後自主 Inpaint](https://github.com/JFTai/Local-image-generation-agent-/issues/35)：**唯一新 `codex-ready`，待本機 Codex 接手**。新變因是向 Hermes 說明原生 `/view` 需分別 URL 編碼 `filename`、`subfolder`、`type`（不提供私有檔名、選中工作流檔名），讓 Hermes 再次自行選局部修圖完整工作流、核對三份素材，官方 schema/deps/print-prompt 自驗後才可單次 GPU 生成與自行回報 SaveImage。限 1 CLI 回合、最多 1 POST/GPU、0 生成重試，無 Browser/Chrome/自訂程式，不修改原工作流。
+- [#35 `/view` 正確子資料夾查詢後自主 Inpaint](https://github.com/JFTai/Local-image-generation-agent-/issues/35)：**整體 PARTIAL，Codex 已實測、ChatGPT 正式審查**（[本機回報](https://github.com/JFTai/Local-image-generation-agent-/issues/35#issuecomment-6881998526)、[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/35#issuecomment-6882244163)）。Hermes 自主選 P06 完整 19 節點，三份來源 `/view` 正確 `filename/subfolder/type` 均 HTTP 200（前段 Bash 混用 PowerShell `Select-String` 三次 exit 127 後自行修正）；schema、strict deps 成功，但 `--print-prompt` 用錯位置參數 exit 2，**未成功預覽便提交，C FAIL**，Codex 事後 exit 0 不可補成提交前 PASS。**1/1 ComfyUI/GPU、0 重試**，Prompt ID `4ab96e45-9448-4b2c-87f7-9ec42746601c`，history success 約 189.4 秒，Hermes 自行回報兩個 SaveImage 識別，兩張 1280×853 PNG SHA 與 ComfyUI 一致。Codex 目視遮罩內有**兩處疑似人物剪影而非一位**、矩形接縫及遮罩內其他內容變動；FFmpeg RGB24 遮罩外 914,908 像素一致，品質 PARTIAL。1 Hermes 回合、29 模型/41 工具，原工作流 SHA/8188/queue/history 保留，0 自訂程式、0 Chrome；無 WebUI/DOM/VLM。原額度用完，不重跑相同 P06 條件。
+- [#36 雙人物參考新功能測試](https://github.com/JFTai/Local-image-generation-agent-/issues/36)：**唯一新 `codex-ready`，等待本機 Codex 接手**。基於 #14 A 人物來源與原完整 P03 15 節點已有可信唯讀核對，測 Hermes 依自然語言雙人物圖書館情境自主選擇既有完整雙參考工作流、核對兩份來源、提交前 **schema/strict deps/print-prompt 全部 exit 0 才能 POST**，最多 1 Hermes CLI 回合／1 GPU 接收／0 生成重試。Codex 執行中觀察並人工比對雙人身份與參考，不能冒稱 S4 全面 PASS 或 WebUI 同對話顯圖；保留原工作流、8188、私人素材，不新增程式/模型，不操作 Chrome。
 
 - [#10 官方認證 capabilities 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/10)：Codex 原生查核 Gateway loopback listener／TCP 可達，但沒有符合本次嚴格授權的既存 capabilities-only 官方認證 client；**GET 0/1，BLOCKED，`codex-blocked`**。沒有新 HTTP API、Hermes session、推論、GPU、ComfyUI 提交或服務變更；同版官方原始碼宣告 run/status/SSE/stop 不等於運行中 API 已認證驗證。[ChatGPT 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/10#issuecomment-6799557510)。
 - 以上成功不等於第二階段完整 PASS，也不等於「生成→VLM 自動審圖→必要修正／重生→模擬器回傳」已完成.
@@ -57,14 +58,14 @@
 
 **2026-11-12 使用者最新指示仍優先**：Open WebUI 實際操作 Hermes，以官方 Skill／comfy-cli 執行原完整工作流並回傳圖片，Codex 在實測期間觀察；遇錯先在既有工具可逆範圍修復，再查同版官方與社群案例，仍無解保留證據並測其他功能。不得新增自訂程式或無關診斷 gate。
 
-**最新續行**：#24 內建 Browser 僅 queued、無 DOM 工具而 BLOCKED，原 1/1 GPU 未用；#25 唯讀準備 PASS；#26 擅寫自訂 Python FAIL；#27 Skill POST 重送風險 BLOCKED；#28 引導式 P06 生成 PARTIAL；#29 引導式 P08 生成及三輸出識別 PARTIAL；#30 中央原圖 RGB 保留 PASS、左右及底部接縫 PARTIAL；#31 過早停止 PARTIAL；#32 Hermes 22 節點編輯完成但 18/18 迭代預算結束、0 GPU；**#33 Hermes 自行完成 P08 22 節點官方驗證、單次生成與三輸出識別 PASS，底部 11px 接縫消除，左右側縫仍在，整體 PARTIAL**。[#34](https://github.com/JFTai/Local-image-generation-agent-/issues/34) 已證實 Hermes **不指定檔名自主選 P06 PASS**，但 `/view` 缺 `subfolder` 三次 404，0 GPU、整體 PARTIAL；Codex 事後正確查詢三份素材皆 200。現派 [#35](https://github.com/JFTai/Local-image-generation-agent-/issues/35) 修正原生 `/view` 欄位查詢後再驗自主選擇、來源及單次生成（最多 1 GPU、0 重試）。#10 capabilities 與 #16 TDR 不是全局 gate；8188、原工作流、私人素材與 Chrome 保護不變。
+**最新續行**：#24 內建 Browser 僅 queued、無 DOM 工具而 BLOCKED，原 1/1 GPU 未用；#25 唯讀準備 PASS；#26 擅寫自訂 Python FAIL；#27 Skill POST 重送風險 BLOCKED；#28 引導式 P06 生成 PARTIAL；#29 引導式 P08 生成及三輸出識別 PARTIAL；#30 中央原圖 RGB 保留 PASS、左右及底部接縫 PARTIAL；#31 過早停止 PARTIAL；#32 Hermes 22 節點編輯完成但 18/18 迭代預算結束、0 GPU；**#33 Hermes 自行完成 P08 22 節點官方驗證、單次生成與三輸出識別 PASS，底部 11px 接縫消除，左右側縫仍在，整體 PARTIAL**。[#34](https://github.com/JFTai/Local-image-generation-agent-/issues/34) 已證實 Hermes **不指定檔名自主選 P06 PASS**，但 `/view` 缺 `subfolder` 三次 404，0 GPU、整體 PARTIAL；Codex 事後正確查詢三份素材皆 200。#35 已完成：Hermes 自主選 P06、三份 `/view` 200、單次生成與輸出識別 PASS，但提交前 print-prompt FAIL、單人品質 PARTIAL；正式審查已記錄。現派 [#36](https://github.com/JFTai/Local-image-generation-agent-/issues/36) 測雙人物參考原完整 P03 類工作流及兩人身份保留，1 回合、最多 1 GPU、0 重試，提交前三項官方自驗必須 exit 0。#10 capabilities 與 #16 TDR 不是全局 gate；8188、原工作流、私人素材與 Chrome 保護不變。
 
 #10 capabilities-only BLOCKED 與 #16 P02 GPU TDR 不作其他獨立功能測試的全局 gate；#18 完整 URL 引導式回圖 PASS、#19 P01 新生圖 PARTIAL、#20–#23 自主工具/取圖缺口仍未解。不得宣稱完整自主閉環 PASS。
 
 
 ## 四、交接、環境與安全
 
-- GitHub Issue 讀寫與本機 Codex 交接已驗證。#24 WebUI 內建 Browser/DOM `codex-blocked`；#25 P06/P08 唯讀準備 PASS；#26 自訂程式 FAIL；#27 官方 Skill POST 重送風險 BLOCKED；#28 P06、#29 P08 引導式生成 PARTIAL；#30 品質 PARTIAL；#31/#32 Hermes 編輯回歸 PARTIAL；**#33 Hermes P08 自驗／單次生成／輸出識別 PASS，品質側縫 PARTIAL，已審查**；**#34 限定候選自主選 P06 PASS、整體 PARTIAL（`/view` subfolder 404、0 GPU）已審查；#35 是唯一新 `codex-ready`**，針對正確查詢欄位後的來源/官方自驗/單次生圖。GitHub 輪詢不算本機 Codex 即時監控。
+- GitHub Issue 讀寫與本機 Codex 交接已驗證。#24 WebUI 內建 Browser/DOM `codex-blocked`；#25 P06/P08 唯讀準備 PASS；#26 自訂程式 FAIL；#27 官方 Skill POST 重送風險 BLOCKED；#28 P06、#29 P08 引導式生成 PARTIAL；#30 品質 PARTIAL；#31/#32 Hermes 編輯回歸 PARTIAL；**#33 Hermes P08 自驗／單次生成／輸出識別 PASS，品質側縫 PARTIAL，已審查**；**#34 限定候選自主選 P06 PASS、整體 PARTIAL；#35 自主選擇／來源 HTTP 200／單次生成與輸出識別 PASS，但提交前預覽 FAIL、品質 PARTIAL，已正式審查；#36 是唯一新 `codex-ready`**，測雙人物參考新功能並要求提交前官方自驗全部成功。GitHub 輪詢不算本機 Codex 即時監控。
 - ChatGPT 每小時讀取 Codex 回報、審查後續並續派；`codex-ready` 是本機 Codex 交接入口。排程不應因單一診斷 Issue 被 BLOCKED 就停用；只有實質結果與直接證據才能判為完成。
 - **禁止佔用使用者標準 127.0.0.1:8188 的受限白名單 ComfyUI**。不得擅自停止日常 ComfyUI、變更全域設定、讀取 Open WebUI 帳密／憑證、公開私人圖片／本機路徑。
 - 使用者 2026-11-12 已明確要求進行**實際生圖及回傳測試**；#11 授權 2 次，實際使用 1 次 ComfyUI 提交；**#12 原授權新生圖 0，實際因舊回合自動續跑意外發生 1 次未授權 GPU 提交**，不能誤記為 0。#13、#14 各自為零 GPU 的不同子任務，不延長 #11/#12 額度。後續具體功能 Issue 可明列合理 GPU 上限；不得擅自下載／更換模型、安裝套件、增加自訂程式、覆蓋原完整工作流或暴露憑證。
@@ -76,6 +77,6 @@
 
 **#24 續辦最新結果**：Codex 以既有 Open WebUI 0.11.0 和程序層 `OFFLINE_MODE=true`（已回退）確認 8080 首頁及 `/api/config` HTTP 200；但內建 Browser `open_in_codex` 只回 `queued`，無頁面互動/DOM 工具，故端到端仍 BLOCKED，0 WebUI/Hermes/ComfyUI/GPU、新圖 0；原 1/1 GPU 未使用。不可在相同環境反覆排隊或改用使用者 Chrome。[#24 續審](https://github.com/JFTai/Local-image-generation-agent-/issues/24#issuecomment-6872527801)。
 
-**#33 最新成果**：Hermes 在 CLI 中自行完成 22 節點 P08 官方驗證、唯一 GPU 提交與三輸出識別；1536×853 新圖去除底部 11px 接縫，中央 RGB24 全保留，但左右垂直接縫未解；整體 PARTIAL。[#33 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/33#issuecomment-6880085299)。**#34 已正式審查 PARTIAL**：Hermes 在限定候選中自主選 P06 PASS，但來源 `/view` 漏 `subfolder` 造成三次 404，未進入 GPU；Codex 事後同三份引用正確查詢均 200。**#35 為唯一新派 `codex-ready`**：不預告選中檔名，只修正 `/view` 正確查詢欄位，讓 Hermes 自驗來源後以原完整工作流單次生圖及自主輸出識別；1 CLI 回合、最多 1 GPU、0 重試；與 #24 WebUI DOM 主線獨立。不得新增程式、模型或更動原工作流。
+**#33 最新成果**：Hermes 在 CLI 中自行完成 22 節點 P08 官方驗證、唯一 GPU 提交與三輸出識別；1536×853 新圖去除底部 11px 接縫，中央 RGB24 全保留，但左右垂直接縫未解；整體 PARTIAL。[#33 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/33#issuecomment-6880085299)。**#34 已正式審查 PARTIAL**：Hermes 在限定候選中自主選 P06 PASS，但來源 `/view` 漏 `subfolder` 造成三次 404，未進入 GPU；Codex 事後同三份引用正確查詢均 200。**#35 已正式審查 PARTIAL**：Hermes 三份 `/view` HTTP 200、自主選 P06、1 GPU history success、兩輸出識別 PASS；但提交前 print-prompt exit 2 未修正便 POST，局部圖出現兩個疑似人物與接縫。**#36 是唯一新派 `codex-ready`**：雙人物參考／原完整 P03 類工作流，自主選擇、來源核對、提交前三項官方驗證全 exit 0 後最多 1 GPU／0 重試；CLI 子測試，不宣稱 #24 WebUI DOM 已解。不得新增程式、模型或更動原工作流。
 
 **#23 整體 FAIL**：可逆 PATH 前置僅在本機 shell 通過，Hermes 實際 CWD 未證實；歷史 terminal 錯誤已有定位，不在相同條件下無限重試。#16 GPU TDR 與 #10 capabilities-only BLOCKED 分別保留，不阻擋其他已授權功能。不得擅自安裝模型、改原工作流、增加自訂程式或公開私人資料。
