@@ -80,3 +80,8 @@
 **#33 最新成果**：Hermes 在 CLI 中自行完成 22 節點 P08 官方驗證、唯一 GPU 提交與三輸出識別；1536×853 新圖去除底部 11px 接縫，中央 RGB24 全保留，但左右垂直接縫未解；整體 PARTIAL。[#33 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/33#issuecomment-6880085299)。**#34 已正式審查 PARTIAL**：Hermes 在限定候選中自主選 P06 PASS，但來源 `/view` 漏 `subfolder` 造成三次 404，未進入 GPU；Codex 事後同三份引用正確查詢均 200。**#35 已正式審查 PARTIAL**：Hermes 三份 `/view` HTTP 200、自主選 P06、1 GPU history success、兩輸出識別 PASS；但提交前 print-prompt exit 2 未修正便 POST，局部圖出現兩個疑似人物與接縫。**#36 是唯一新派 `codex-ready`**：雙人物參考／原完整 P03 類工作流，自主選擇、來源核對、提交前三項官方驗證全 exit 0 後最多 1 GPU／0 重試；CLI 子測試，不宣稱 #24 WebUI DOM 已解。不得新增程式、模型或更動原工作流。
 
 **#23 整體 FAIL**：可逆 PATH 前置僅在本機 shell 通過，Hermes 實際 CWD 未證實；歷史 terminal 錯誤已有定位，不在相同條件下無限重試。#16 GPU TDR 與 #10 capabilities-only BLOCKED 分別保留，不阻擋其他已授權功能。不得擅自安裝模型、改原工作流、增加自訂程式或公開私人資料。
+
+## 2026-11-15 03:50 新進度｜#36 審查及 #37 續派
+
+- [#36](https://github.com/JFTai/Local-image-generation-agent-/issues/36)：Codex 本機完成 **1 GPU／0 重試**，Hermes 自主選完整 P03 15 節點、兩份來源 HTTP 200／SHA、三項官方預檢 exit 0、history success、1536×2048 PNG，兩人可區分；但**閱讀提示錯寫 P03 原檔，真正提交副本仍為站立揮手**，情境不符，原檔保護 FAIL。Codex 已以測前 SHA 相符備份復原並核對 P01/P02/P03/P06/P08 原 SHA 不變。整體 **PARTIAL**；[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/36#issuecomment-6883277065)。不宣稱 WebUI DOM、跨場景一致性或 VLM PASS。
+- [#37](https://github.com/JFTai/Local-image-generation-agent-/issues/37)：新 `codex-ready`，針對**只修改 P03 雙人物工作副本並在提交前核對 print-prompt 的『坐著閱讀、非站立揮手』語義**做原生修復回歸；1 Hermes 回合、最多 1 GPU、0 生成重試，原檔誤寫立即停止且 0 GPU。不新增程式／模型／Chrome 操作，保留 8188。#24 WebUI 同對話顯圖仍獨立 BLOCKED，#10 capabilities 非全局 gate。
