@@ -1,6 +1,6 @@
 # 本地生圖 Agent｜目前狀態
 
-**更新：2026-11-13（台灣時間）**。長期方向與每階段驗收門檻見 [八階段正式藍圖](ROADMAP_8_STAGES.md)；GitHub Issue 才是 Codex 可執行的工作授權，本文不是本機指令。
+**更新：2026-11-14（台灣時間）**。長期方向與每階段驗收門檻見 [八階段正式藍圖](ROADMAP_8_STAGES.md)；GitHub Issue 才是 Codex 可執行的工作授權，本文不是本機指令。
 
 ## 一、總目標與目前階段
 
@@ -36,20 +36,22 @@
 - [#20 #19 新生圖自主找回與顯圖](https://github.com/JFTai/Local-image-generation-agent-/issues/20)：**整體 FAIL，Codex 已回報、ChatGPT 正式審查**（[審查](https://github.com/JFTai/Local-image-generation-agent-/issues/20#issuecomment-6839982115)）。2026-11-13 07:16:26 新 Open WebUI 指令確實進 Hermes，Codex 在執行中監看；未提供 Prompt ID／檔名／URL。Hermes 未找到 #19 history/SaveImage，沒有成功 GET /view 或 HTTP 200，**同對話 DOM 圖片 0**；至少 10 次 terminal 中有 3/3/2 次相同回條，21 次模型呼叫，第 13 次輸入 55,366 tokens，壓縮後仍無進展，Codex 主動停止，**不是 #19 的重複串流偵測命中**。Codex 事後獨立核對 #19 PNG 2048×2048、7,547,439 bytes、SHA-256 `abb9da97e4be88710ede0975834a1596a9c45b7aaaeed373a8b8e9c78e0759db`，**不可算 Hermes 自主找回**。本輪 ComfyUI/GPU 新提交 **0/0**，未見舊回合重播，工作流 SHA 不變；07:28:43 官方 Gateway stop 後程序退出／listener 消失，狀態檔仍 draining。相似 Hermes 上游工具循環案例不等於本機同版根因。下一步 #21 只提供官方端點名稱的引導式取圖測試，仍不提供成品識別碼。
 - [#21 官方端點引導式回圖](https://github.com/JFTai/Local-image-generation-agent-/issues/21)：**整體 FAIL，Codex 已回報、ChatGPT 正式審查**（[審查](https://github.com/JFTai/Local-image-generation-agent-/issues/21#issuecomment-6841727459)）。2026-11-13 08:34:19 新 Open WebUI 指令確實送達 Hermes，僅提示 GET /history、GET /view，沒有提供 Prompt ID／檔名／URL。Hermes 未驗證取得 #19 history/SaveImage、有效 GET /view 或 HTTP 200；同對話 0 img，最終錯誤。11 次模型與 11 次 terminal（2 次非零退出：Python 找不到、檔案不存在），達第 8 次 terminal 停止門檻後，WebUI Stop 至 Gateway 退出間仍有 3 次工具完成；本輪沒有證據支持巨大回條截斷、compaction 或逐字相同工具回條為根因。Codex **事後獨立**確認 #19 PNG 2048×2048、7,547,439 bytes、SHA-256 `abb9da97e4be88710ede0975834a1596a9c45b7aaaeed373a8b8e9c78e0759db`，**不能算 Hermes 自主找回**。ComfyUI/GPU 新提交 0/0、無新圖或舊回合重播，六份工作流前後 SHA 一致；08:37:36 官方停止後 Gateway 程序與 listener 均退出，原有服務 HTTP 200。相似上游工具循環案例尚非本機根因。**不重跑相同條件**。
 - [#22 S2/S3 人物／黑湖自主選擇與官方 Skill 唯讀驗證](https://github.com/JFTai/Local-image-generation-agent-/issues/22)：**整體 FAIL，Codex 已回報且 ChatGPT 正式審查**（[審查](https://github.com/JFTai/Local-image-generation-agent-/issues/22#issuecomment-6841838813)）。10:12:35 新 Open WebUI 指令送達 Hermes，Codex 執行中觀察；Hermes 未證明選中 A `M04-P03.json` 15 節點或 B `M03-P02.json` 17 節點，也未證實 Hermione/Jack、BlackLake-Day 來源對應。2 次 `skill_view` 有證據，但未執行可核對的官方 `extract_schema.py`／`check_deps.py --strict`，同對話顯示錯誤。**8 次模型、11 次 terminal、2 次 skill_view**；多個 terminal 回條長度同為 45 字元，**內容是否相同／實際錯誤尚未證明**。第 8 次 terminal 已達停止門檻但停止期間仍有工具完成；10:15:06 Gateway 程序/listener 已退出。**0 ComfyUI 提交、0 GPU、0 新 PNG**，未見舊回合重播，P01/P02/P03 原工作流前後 SHA 相同；原服務 HTTP 200。不可把 #14 Codex 舊核對算 Hermes 自主選擇；不直接重跑同條件。
+- [#23 Hermes 工具故障原生修復與回歸](https://github.com/JFTai/Local-image-generation-agent-/issues/23)：**整體 FAIL，Codex 已回報且 ChatGPT 正式審查**（[Codex 回報](https://github.com/JFTai/Local-image-generation-agent-/issues/23#issuecomment-6870692326)、[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/23#issuecomment-6870850239)）。#20–#22 工具故障定位 PASS：#21 Git Bash 命中 Windows Store python3 別名、管線 exit code 掩蓋錯誤；#22 7 筆逐字相同空 stdout/exit 0、未指定 workdir／猜路徑。Codex 只在單次 Gateway 啟動前可逆前置既有 venv PATH 與 TERMINAL_CWD，本機 shell 確認 Python/comfy-cli/Skill 入口，但 **Hermes 實際 CWD 未證實**。11/13 10:26 新 Open WebUI 指令送達 Hermes，11 模型呼叫、11 工具（skill_view 1、search_files 1、terminal 9），**未自主找到 P03 15 節點／來源，未執行 extract_schema.py，check_deps.py exit 1 且非 --strict/P03**；無最終 assistant 訊息，次日 8080 無 listener，DOM 無法補驗。P01/P02/P03 SHA 不變、未見新 PNG/POST /prompt，但完整 ComfyUI queue/history 輪詢證據遺失，**不能獨立宣稱 0 GPU**。第 8 次 terminal 後官方停止，drain 期間另有 1 次 terminal；Gateway 程序與 8642 listener 最後退出，狀態檔仍 draining。原 1/1 回合額度已用盡，不重跑同條件。上游 Hermes CWD 案例與本機症狀部分相關，未證實同因。
 - [#10 官方認證 capabilities 預檢](https://github.com/JFTai/Local-image-generation-agent-/issues/10)：Codex 原生查核 Gateway loopback listener／TCP 可達，但沒有符合本次嚴格授權的既存 capabilities-only 官方認證 client；**GET 0/1，BLOCKED，`codex-blocked`**。沒有新 HTTP API、Hermes session、推論、GPU、ComfyUI 提交或服務變更；同版官方原始碼宣告 run/status/SSE/stop 不等於運行中 API 已認證驗證。[ChatGPT 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/10#issuecomment-6799557510)。
 - 以上成功不等於第二階段完整 PASS，也不等於「生成→VLM 自動審圖→必要修正／重生→模擬器回傳」已完成.
 
 ## 三、當前主線：Open WebUI → Hermes → ComfyUI → 回圖
 
-**2026-11-12 使用者最新指示仍優先**：Open WebUI 操作 Hermes，以官方 Skill／comfy-cli 執行原完整工作流並回傳圖片，Codex 在實測期間觀察，ChatGPT 透過 GitHub 審查與續派。遇錯先在原有工具可逆範圍修復，再查同版官方及社群案例，仍無解保留證據並測其他功能；不新增自訂程式或無關診斷 gate。
+**2026-11-12 使用者最新指示仍優先**：Open WebUI 實際操作 Hermes，以官方 Skill／comfy-cli 執行原完整工作流並回傳圖片，Codex 在實測期間觀察；遇錯先在既有工具可逆範圍修復，再查同版官方與社群案例，仍無解保留證據並測其他功能。不得新增自訂程式或無關診斷 gate。
 
-**最新執行：[Issue #23](https://github.com/JFTai/Local-image-generation-agent-/issues/23) 為唯一 `codex-in-progress`，Codex 已留言接手；尚無修復或功能回歸結果。** #22 已正式 **FAIL**：新 Open WebUI 指令確實進 Hermes，但 A/B 完整工作流與來源未被自主找出，2 次 skill_view 未轉成官方 schema/deps 實際驗證，11 次 terminal 後對話顯示錯誤；0 GPU、原工作流 SHA 不變。#21 自主取圖 FAIL；#18 僅完整 URL 引導式回圖 PASS，#19 新生圖成功但未自主回圖。
+**最新續派：[Issue #24](https://github.com/JFTai/Local-image-generation-agent-/issues/24) 是唯一 `codex-ready`，等待本機 Codex 接手。** #23 已由 Codex 提交完整實測並正式審查 **FAIL**：歷史工具錯誤定位成功，但程序級 PATH 修正未證明 Hermes CWD 生效；新 Open WebUI 回合仍未自主完成 P03 官方 Skill schema/deps 或可讀答覆，無新的 GPU 成功證據。#24 改測**已知成功的原完整 P01**：單次新生成，直接用同回合 SaveImage/history 及正確官方 /view 查詢格式取圖並在 Open WebUI 顯示；這是引導式工作流/路由的獨立真實功能回歸，**最多 1 條指令、1 回合、1 次 ComfyUI/GPU 接收、0 生成重試**，保留原工作流及 8188。
 
-#23 針對 #20–#22 **已發生的 Hermes 工具錯誤**，先由 Codex 比對本機實際 terminal／skill_view 命令、參數、退出碼、回條、CWD 與官方同版工具行為；**只有找到並實施可逆的具體修復變因**，才允許 1 次新的 Open WebUI→Hermes 官方 Skill 人物工作流唯讀功能回歸，**0 ComfyUI/GPU 新提交**。沒有可修變因就保留 BLOCKED，不盲目重跑；這是主線功能修復，不是新增 health／capabilities／Sandbox gate。#10 capabilities 401 與 #16 GPU TDR 均不作其他獨立測試的全局 gate。
+#10 capabilities-only BLOCKED 與 #16 P02 GPU TDR 不作其他獨立功能測試的全局 gate；#18 完整 URL 引導式回圖 PASS、#19 P01 新生圖 PARTIAL、#20–#23 自主工具/取圖缺口仍未解。不得宣稱完整自主閉環 PASS。
+
 
 ## 四、交接、環境與安全
 
-- GitHub Issue 讀寫與本機 Codex 接手交接已驗證；#11 PARTIAL、#12 FAIL、#13 PARTIAL 均有 Codex 回報與 ChatGPT 審查。**#14 PASS、#15 FAIL、#16 BLOCKED、#17 FAIL、#18 引導式回圖 PASS、#19 新生圖 PARTIAL、#20/#21 自主找回 FAIL、#22 自主工作流選擇 FAIL 均已審查；#23 為唯一 `codex-in-progress`**，已見 [Codex 接手留言](https://github.com/JFTai/Local-image-generation-agent-/issues/23#issuecomment-6841903416)，尚無 #23 修復或回歸完成證據，不能宣稱完全自主回圖或同回合閉環已修復。GitHub 每小時輪詢不能冒充本機 Codex 的即時監控。
+- GitHub Issue 讀寫與本機 Codex 交接已驗證。#14 PASS、#18 引導式回圖 PASS、#19 新生圖 PARTIAL、#20/#21 自主找回 FAIL、#22 工作流選擇 FAIL、**#23 原生工具修復回歸 FAIL（已審查）**；**#24 是目前唯一 `codex-ready`**，尚無 Codex 接手或新實測證據。GitHub 每小時輪詢不能冒充本機 Codex 的即時監控。
 - ChatGPT 每小時讀取 Codex 回報、審查後續並續派；`codex-ready` 是本機 Codex 交接入口。排程不應因單一診斷 Issue 被 BLOCKED 就停用；只有實質結果與直接證據才能判為完成。
 - **禁止佔用使用者標準 127.0.0.1:8188 的受限白名單 ComfyUI**。不得擅自停止日常 ComfyUI、變更全域設定、讀取 Open WebUI 帳密／憑證、公開私人圖片／本機路徑。
 - 使用者 2026-11-12 已明確要求進行**實際生圖及回傳測試**；#11 授權 2 次，實際使用 1 次 ComfyUI 提交；**#12 原授權新生圖 0，實際因舊回合自動續跑意外發生 1 次未授權 GPU 提交**，不能誤記為 0。#13、#14 各自為零 GPU 的不同子任務，不延長 #11/#12 額度。後續具體功能 Issue 可明列合理 GPU 上限；不得擅自下載／更換模型、安裝套件、增加自訂程式、覆蓋原完整工作流或暴露憑證。
@@ -57,6 +59,6 @@
 
 ## 五、下一階段決策
 
-**已發布 [#23](https://github.com/JFTai/Local-image-generation-agent-/issues/23)**：Codex 先從 #20–#22 已有本機紀錄精確辨識 terminal／skill_view 實際失敗（命令、參數、回條、exit code、CWD），對照同版官方來源與真實社群案例，優先可逆原生修復；**僅有具體修復變因時**才從 Open WebUI 開 1 次新 Hermes 回合，驗證 A 人物原完整 P03 與官方 Skill schema/deps。**0 或 1 條指令、0 或 1 回合、0 ComfyUI/GPU 提交、0 生成重試**；若無可修變因就保留證據並標 BLOCKED，下一輪改測其他獨立功能。不修改原工作流、8188、模型、驅動、憑證或增加自訂程式。
+**已發布 [#24](https://github.com/JFTai/Local-image-generation-agent-/issues/24)**：Codex 在既有 Open WebUI／Hermes／完整 ComfyUI 8188 上，使用官方 Skill/comfy-cli 及**原 P01 10 節點的工作副本**，測試一次新圖生成→同回合 SaveImage/history→正確 /view 查詢 URL→同對話圖片 DOM。只允許 **1 條新 WebUI 指令、1 Hermes 回合、1 次 ComfyUI/GPU 接收、0 次生成重試**；Codex 在實際測試中觀察並核對 Prompt ID/history、PNG SHA、HTTP 與 DOM，防舊回合重播與原檔改寫。成功也只算**已知工作流／官方路由引導式閉環**，不是自主選工作流、跨 session 找圖或整個階段 PASS。
 
-**回圖缺口仍未解**：#21 的官方端點引導未讓 Hermes 自行找到 #19 成品或顯示 DOM，保留 FAIL 與工具非零退出證據，不再以相同條件重跑。#19 曾錯改 P01 原始工作流，已還原，後續僅用工作副本。#16 GPU TDR 時間關聯不代表已查明根因；#10 capabilities-only BLOCKED 不是生圖先決條件。八階段其他可驗收功能繼續。
+**#23 整體 FAIL**：可逆 PATH 前置僅在本機 shell 通過，Hermes 實際 CWD 未證實；歷史 terminal 錯誤已有定位，不在相同條件下無限重試。#16 GPU TDR 與 #10 capabilities-only BLOCKED 分別保留，不阻擋其他已授權功能。不得擅自安裝模型、改原工作流、增加自訂程式或公開私人資料。
