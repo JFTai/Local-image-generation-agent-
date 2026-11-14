@@ -102,3 +102,9 @@
 
 - [#39](https://github.com/JFTai/Local-image-generation-agent-/issues/39)：Codex 本機 1 Hermes 回合、10 模型／9 工具，0 POST/GPU/修改。Hermes 從 #37 history 自行找兩個 input loader 並最終 HEAD 200/curl exit 0，但 filename 仍包含相對子路徑、未正確三欄拆分/編碼；Loader 20 空 subfolder 連續 3 次 404，Loader 23 亦先 404。Codex 正確三欄查詢兩筆 HEAD 200 僅算獨立複核，不能冒稱 Hermes 自主正確解析。**整體 PARTIAL**，[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/39#issuecomment-6885190684)。五份原工作流 SHA、8188/queue/history 保留，Gateway 官方停止；無自訂程式/Chrome。
 - [#40](https://github.com/JFTai/Local-image-generation-agent-/issues/40)：新 `codex-ready`，首次 S4 跨場景實測：沿用 #37 同兩位人物參考，Hermes 自主選既有完整雙人物工作流，改成黑湖湖畔並肩交談；只改工作副本、提交前官方三項預檢全成功，**最多 1 Hermes 回合／1 GPU／0 重試**。Codex 在執行時觀察，與 #37 圖書館圖和原人物參考逐人比對身份與風格。來源 HTTP 三欄仍記 PARTIAL，不再用相同 404/200 重複派工。#24 WebUI DOM 與 #10 capabilities 仍獨立 BLOCKED，非全局 gate。
+
+
+## 2026-11-15 07:23 新進度｜#40 OOM BLOCKED 與 #41 故障恢復續派
+
+- [#40](https://github.com/JFTai/Local-image-generation-agent-/issues/40)：Codex 在本機執行時觀察 Hermes 自主選完整雙參考 P03/M04 15 節點、只改副本、官方三項預檢 exit 0；但 Hermes 未自行完成雙人物素材實算 SHA/input HTTP（來源 PARTIAL）。**1/1 GPU 提交、0 重試**，Prompt ID `115630bf-6e61-4d59-8795-785bec559584`；ComfyUI CUDA OOM／`aimdo memory compile error` 後原 8188 程序退出，無新 PNG/history success，**生成 FAIL、S4 跨場景目視 BLOCKED、整體 BLOCKED**。五份原工作流 SHA 一致，未新建程式、未操作 Chrome。未證明 Windows TDR，亦未驗證 8188 恢復。[Codex 報告](https://github.com/JFTai/Local-image-generation-agent-/issues/40#issuecomment-6885477375)；[ChatGPT 正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/40#issuecomment-6885832575)。
+- [#41](https://github.com/JFTai/Local-image-generation-agent-/issues/41)：**唯一新 `codex-ready`**，階段 7 原生故障恢復／階段 2 已有 PNG 來源鏈回歸；先唯讀查 #40 OOM、8188/VRAM/history，再於確定原完整 Custom Nodes 官方啟動入口時最多**一次原生啟動**，唯讀核對 #37 PNG/history 並研究同版官方案例。**0 GPU POST、0 新生圖／重試、0 模型/全域設定/原工作流修改**；不得用受限 ComfyUI 取代使用者 8188。#24 WebUI DOM、#10 capabilities 仍獨立 BLOCKED，非全局 gate。
