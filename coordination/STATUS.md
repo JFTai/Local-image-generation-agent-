@@ -96,3 +96,9 @@
 
 - [#38](https://github.com/JFTai/Local-image-generation-agent-/issues/38)：Codex 本機唯讀回合（1 Hermes 回合、6 模型／10 工具、**0 GPU／0 POST／0 修改**）。Hermes 自行計算兩位人物原件與 ComfyUI input 四份 SHA，均與各自預期一致；從 #37 history 正確找回 SaveImage type=output，下載 4,711,926 bytes PNG 並實算 SHA `bb414be643b6c68311b35b21e32b1afb213c546cdd108beba2a28193946f0472`，A/C/D/E PASS。惟兩份 input HEAD 均把 subfolder 傳空而 HTTP 404，**B FAIL**；Codex 事後依真正子資料夾兩筆 HTTP 200，不能冒充 Hermes 自主。**整體 PARTIAL**；[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/38#issuecomment-6884344589)。原工作流 SHA、8188/queue/history 保持不變，未新增程式、未操作 Chrome。
 - [#39](https://github.com/JFTai/Local-image-generation-agent-/issues/39)：新 `codex-ready`，0 GPU／0 工作流修改，測 Hermes 從既有 P03 兩個真實 input loader 引用**自行解析 relative subfolder**、各自 HEAD/GET HTTP 200 並記錄 curl exit；Codex 在本機實際執行中監看並獨立複核。#24 WebUI 同對話顯圖仍獨立 BLOCKED，#10 capabilities 非全局 gate；不因單項失敗停止八階段。
+
+
+## 2026-11-15 06:28 新進度｜#39 審查及 #40 續派
+
+- [#39](https://github.com/JFTai/Local-image-generation-agent-/issues/39)：Codex 本機 1 Hermes 回合、10 模型／9 工具，0 POST/GPU/修改。Hermes 從 #37 history 自行找兩個 input loader 並最終 HEAD 200/curl exit 0，但 filename 仍包含相對子路徑、未正確三欄拆分/編碼；Loader 20 空 subfolder 連續 3 次 404，Loader 23 亦先 404。Codex 正確三欄查詢兩筆 HEAD 200 僅算獨立複核，不能冒稱 Hermes 自主正確解析。**整體 PARTIAL**，[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/39#issuecomment-6885190684)。五份原工作流 SHA、8188/queue/history 保留，Gateway 官方停止；無自訂程式/Chrome。
+- [#40](https://github.com/JFTai/Local-image-generation-agent-/issues/40)：新 `codex-ready`，首次 S4 跨場景實測：沿用 #37 同兩位人物參考，Hermes 自主選既有完整雙人物工作流，改成黑湖湖畔並肩交談；只改工作副本、提交前官方三項預檢全成功，**最多 1 Hermes 回合／1 GPU／0 重試**。Codex 在執行時觀察，與 #37 圖書館圖和原人物參考逐人比對身份與風格。來源 HTTP 三欄仍記 PARTIAL，不再用相同 404/200 重複派工。#24 WebUI DOM 與 #10 capabilities 仍獨立 BLOCKED，非全局 gate。
