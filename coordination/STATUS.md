@@ -138,3 +138,8 @@
 ## 2026-11-15 13:29 台灣時間｜#46 提交前資源 BLOCKED 與 #47 原生回收續派
 - [#46](https://github.com/JFTai/Local-image-generation-agent-/issues/46)：Codex 只做來源／原工作流 SHA 核對及閒置資源觀察，**0 Hermes 回合、0 POST/GPU、0 VLM**。ComfyUI /system_stats CUDA 可用約 3,986 MiB；NVIDIA 驅動可用約 8,621 MiB、使用 3,324 MiB，約 3,323 MiB 程序佔用歸原 ComfyUI。數值口徑不同，不能判定洩漏或最低需求。8188/queue/原工作流正常，原 Issue 保留 `codex-blocked`；[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/46#issuecomment-6889775414)。
 - [#47](https://github.com/JFTai/Local-image-generation-agent-/issues/47)：新 `codex-ready`，S7/S5 只測**已安裝 ComfyUI 版本既有官方模型記憶體卸載**的安全性及前後可觀測回收，最多 1 次官方卸載、**0 GPU POST／0 生成／0 服務重啟**；無法確認安全則不執行。不是 #46 同條件重生圖，也不新增自訂程式／模型／Chrome 操作。#24 Open WebUI DOM 繼續獨立 BLOCKED，#10 capabilities 非全局 gate。
+
+
+## 2026-11-15 15:24 台灣時間｜#47 審查與 #48 續派
+- [#47](https://github.com/JFTai/Local-image-generation-agent-/issues/47)：Codex 已接手並完成本機唯讀驗證；ComfyUI 0.38.0、comfy-cli 1.20.0 官方 unload 入口核對 PASS，但因把 Windows 閒置常駐約 4.82 MiB 非零保留當作「其他 GPU 工作」而 **0 次卸載**，無卸載後測量，整體 **BLOCKED（回收未驗收）**。原 PID 5996、8188 HTTP、queue/history、五份工作流 SHA 正常；NVIDIA 可用 8,621 MiB、ComfyUI CUDA 可用 3,985.63 MiB（不同口徑）。0 Hermes/POST/GPU/VLM/重啟。[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/47#issuecomment-6891037077)。
+- [#48](https://github.com/JFTai/Local-image-generation-agent-/issues/48)：新唯一 `codex-ready`，修正停止判準：區分**活躍 GPU 工作**與閒置 Windows/桌面少量常駐保留；若確認無其他活躍 GPU 工作，最多 1 次既有官方 `comfy free --where local --unload-models`，記錄前後三種顯存指標及原服務/工作流不變。**0 /prompt POST/GPU、0 重啟、0 自訂程式**。不把卸載或固定 VRAM 數字設為 #46 生圖的全局 gate；#24 Open WebUI 同對話顯圖仍未驗收。建立後讀回 JFTai/open/codex-ready，無其他 ready/in-progress。
