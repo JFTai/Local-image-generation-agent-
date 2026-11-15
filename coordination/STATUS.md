@@ -128,3 +128,8 @@
 ## 2026-11-15 12:05 台灣時間｜#44 BLOCKED 審查與 #45 續派
 - [#44](https://github.com/JFTai/Local-image-generation-agent-/issues/44)：Codex 本機回報 **整體 BLOCKED**。Hermes 只改 P03 15 節點副本、schema/strict deps/print-prompt exit 0，人物交談動作提示已改，但錯把黑湖/城堡換成中性背景，未在可逆修正窗口補回；Codex 語義放行 FAIL。Ollama runner 卸載後可用 VRAM 約 8,484–8,621 MiB，低於當輪以 #42 單次成功樣本設定的保守 11,000 MiB（**非實測最低需求**）。**0 POST／0 GPU／0 PNG／0 VLM 復驗**；Gateway stop exit 0、CLI exit 130；原工作流 SHA、8188 保留，未新增程式、未碰 Chrome。 [正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/44#issuecomment-6888938807)。
 - [#45](https://github.com/JFTai/Local-image-generation-agent-/issues/45)：新 **codex-ready**，針對 #44 真正新缺口「P03 暫存副本同時保留黑湖／城堡背景及雙人物相向交談」，最多 1 Hermes 回合、1 次提交前可逆修正、官方三項預檢，**0 GPU／0 POST／0 VLM**；只做語義副本驗證，VRAM 僅唯讀觀測，不將 11 GiB 設成全局 gate。#24 Open WebUI DOM 仍獨立 BLOCKED，#10 capabilities 非全局 gate；下一輪依 Codex 實際回報決定是否進入真正生圖。
+
+
+## 2026-11-15 13:08 台灣時間｜#45 正式審查與 #46 續派
+- [#45](https://github.com/JFTai/Local-image-generation-agent-/issues/45) **語義副本 PASS（範圍限定）**：Codex 本機觀察 Hermes 1 回合、9 模型／14 工具；自主只修改 P03/M04 完整 15 節點工作副本節點 5，同時保留黑湖／湖面／城堡、雙人物身份/服裝/畫風與相向交談、不揮手。最初四次官方腳本路徑錯誤 exit 2，Hermes 同回合修正後 schema/strict deps/print-prompt 全 exit 0；Codex 獨立複核同副本、兩份人物引用、模型/種子/尺寸/輸出及五份原工作流 SHA 一致。8188 正常、queue 0/0、Gateway exit 0；**0 GPU POST、0 新生圖、0 VLM**。正式審查 [#45 留言](https://github.com/JFTai/Local-image-generation-agent-/issues/45#issuecomment-6889564512)。不宣稱圖片改善、人物一致性或 WebUI DOM PASS。
+- [#46](https://github.com/JFTai/Local-image-generation-agent-/issues/46) 為新 **codex-ready**：S5/S4 真實生成與 VLM 復驗，Hermes 重新建立相同語義正確的 P03 工作副本、提交前官方三項預檢，最多 **1 Hermes 生成回合／1 GPU POST／0 生成重試／1 VLM 復驗**；推理與 GPU 分時，OOM 即停；不更動原工作流、模型、Chrome 或新增程式。#24 Open WebUI 同對話 DOM 仍獨立 BLOCKED；#10 capabilities 非全局 gate。
