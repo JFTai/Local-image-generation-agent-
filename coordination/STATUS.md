@@ -123,3 +123,8 @@
 ## 2026-11-15 10:50 台灣時間｜#43 正式審查與 #44 續派
 - [#43](https://github.com/JFTai/Local-image-generation-agent-/issues/43)：**整體 PARTIAL**；Codex 本機以既有 FFmpeg 組合 #42 黑湖、#37 圖書館與兩份人物參考，Hermes 使用原本 Qwen3.5 9B 本機 vision 入口確實讀入 1 張四格圖並完成 1 次視覺推論，正確指出黑湖、人物身份及揮手不似交談；但赫夫帕夫徽章、景別、目光與基準圖用途判斷有誤。1 Hermes 審圖回合、**0 ComfyUI POST/GPU／0 工作流修改**，原檔 SHA 與 8188 保留，沒有 WebUI DOM 或自動修正驗收。[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/43#issuecomment-6888180354)。
 - [#44](https://github.com/JFTai/Local-image-generation-agent-/issues/44)：新 **codex-ready**，S5/S4 讓 Hermes 將 #43 的「兩人微側身相向、自然互看、交談」建議只寫入原完整 P03 工作副本，提交前三項官方預檢成功且提示一致才允許 **最多 1 GPU POST／0 生成重試**；生成後用既有本機 vision 入口最多 1 次復驗。Codex 執行時觀察，保留原檔與 8188，禁止 Chrome、模型切換或新增自訂程式。#24 WebUI DOM 與 #10 capabilities 仍非本 CLI 測試的先決 gate。
+
+
+## 2026-11-15 12:05 台灣時間｜#44 BLOCKED 審查與 #45 續派
+- [#44](https://github.com/JFTai/Local-image-generation-agent-/issues/44)：Codex 本機回報 **整體 BLOCKED**。Hermes 只改 P03 15 節點副本、schema/strict deps/print-prompt exit 0，人物交談動作提示已改，但錯把黑湖/城堡換成中性背景，未在可逆修正窗口補回；Codex 語義放行 FAIL。Ollama runner 卸載後可用 VRAM 約 8,484–8,621 MiB，低於當輪以 #42 單次成功樣本設定的保守 11,000 MiB（**非實測最低需求**）。**0 POST／0 GPU／0 PNG／0 VLM 復驗**；Gateway stop exit 0、CLI exit 130；原工作流 SHA、8188 保留，未新增程式、未碰 Chrome。 [正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/44#issuecomment-6888938807)。
+- [#45](https://github.com/JFTai/Local-image-generation-agent-/issues/45)：新 **codex-ready**，針對 #44 真正新缺口「P03 暫存副本同時保留黑湖／城堡背景及雙人物相向交談」，最多 1 Hermes 回合、1 次提交前可逆修正、官方三項預檢，**0 GPU／0 POST／0 VLM**；只做語義副本驗證，VRAM 僅唯讀觀測，不將 11 GiB 設成全局 gate。#24 Open WebUI DOM 仍獨立 BLOCKED，#10 capabilities 非全局 gate；下一輪依 Codex 實際回報決定是否進入真正生圖。
