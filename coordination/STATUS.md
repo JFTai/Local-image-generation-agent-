@@ -133,3 +133,8 @@
 ## 2026-11-15 13:08 台灣時間｜#45 正式審查與 #46 續派
 - [#45](https://github.com/JFTai/Local-image-generation-agent-/issues/45) **語義副本 PASS（範圍限定）**：Codex 本機觀察 Hermes 1 回合、9 模型／14 工具；自主只修改 P03/M04 完整 15 節點工作副本節點 5，同時保留黑湖／湖面／城堡、雙人物身份/服裝/畫風與相向交談、不揮手。最初四次官方腳本路徑錯誤 exit 2，Hermes 同回合修正後 schema/strict deps/print-prompt 全 exit 0；Codex 獨立複核同副本、兩份人物引用、模型/種子/尺寸/輸出及五份原工作流 SHA 一致。8188 正常、queue 0/0、Gateway exit 0；**0 GPU POST、0 新生圖、0 VLM**。正式審查 [#45 留言](https://github.com/JFTai/Local-image-generation-agent-/issues/45#issuecomment-6889564512)。不宣稱圖片改善、人物一致性或 WebUI DOM PASS。
 - [#46](https://github.com/JFTai/Local-image-generation-agent-/issues/46) 為新 **codex-ready**：S5/S4 真實生成與 VLM 復驗，Hermes 重新建立相同語義正確的 P03 工作副本、提交前官方三項預檢，最多 **1 Hermes 生成回合／1 GPU POST／0 生成重試／1 VLM 復驗**；推理與 GPU 分時，OOM 即停；不更動原工作流、模型、Chrome 或新增程式。#24 Open WebUI 同對話 DOM 仍獨立 BLOCKED；#10 capabilities 非全局 gate。
+
+
+## 2026-11-15 13:29 台灣時間｜#46 提交前資源 BLOCKED 與 #47 原生回收續派
+- [#46](https://github.com/JFTai/Local-image-generation-agent-/issues/46)：Codex 只做來源／原工作流 SHA 核對及閒置資源觀察，**0 Hermes 回合、0 POST/GPU、0 VLM**。ComfyUI /system_stats CUDA 可用約 3,986 MiB；NVIDIA 驅動可用約 8,621 MiB、使用 3,324 MiB，約 3,323 MiB 程序佔用歸原 ComfyUI。數值口徑不同，不能判定洩漏或最低需求。8188/queue/原工作流正常，原 Issue 保留 `codex-blocked`；[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/46#issuecomment-6889775414)。
+- [#47](https://github.com/JFTai/Local-image-generation-agent-/issues/47)：新 `codex-ready`，S7/S5 只測**已安裝 ComfyUI 版本既有官方模型記憶體卸載**的安全性及前後可觀測回收，最多 1 次官方卸載、**0 GPU POST／0 生成／0 服務重啟**；無法確認安全則不執行。不是 #46 同條件重生圖，也不新增自訂程式／模型／Chrome 操作。#24 Open WebUI DOM 繼續獨立 BLOCKED，#10 capabilities 非全局 gate。
