@@ -1,5 +1,12 @@
 # 本地生圖 Agent｜目前狀態
 
+## 2026-11-16 最新實測與續派（以 Issue 即時狀態為準）
+
+- [#61](https://github.com/JFTai/Local-image-generation-agent-/issues/61) **整體 PARTIAL，S7 新 session 官方 Skill 自主復原／零重複提交子項 PASS**：Codex 在本機執行中觀察 Hermes 0.22.5 使用 `skills,terminal`，自行讀 ComfyUI Skill、查 #57 history 並 GET /view 取得既有 1536×2048 PNG；HTTP 200／SHA-256 `032a3ece90f78b438b67a8ad4c66e5e4e3583c7b0509154a8dfa99ae61503157` 核對一致。**0 ComfyUI POST／0 GPU 新生圖／0 重試**，8188 與五份原工作流不變。Hermes 終報 bytes 錯寫 463,976，實際 4,620,619，故整體非 PASS。[正式審查](https://github.com/JFTai/Local-image-generation-agent-/issues/61#issuecomment-6905727654)。
+- [#62](https://github.com/JFTai/Local-image-generation-agent-/issues/62) 新 `codex-ready`：S2/S7 **不給 Prompt ID**，Hermes 僅依語義自主發現 #57 history／PNG；最多 1 CLI session、預期 0 POST（1 次意外容錯即 FAIL 並停止）、0 重試。尚無 Codex 接手或本機實測證據。
+- **核心缺口仍在**：[#11](https://github.com/JFTai/Local-image-generation-agent-/issues/11)／[#24](https://github.com/JFTai/Local-image-generation-agent-/issues/24)／[#50](https://github.com/JFTai/Local-image-generation-agent-/issues/50) 的 Open WebUI **同一對話新生圖並載入 DOM**未完整驗收；[#58](https://github.com/JFTai/Local-image-generation-agent-/issues/58) 劇情模擬器 LLM 自主委派 BLOCKED。#10 capabilities 401 不作全局 gate；不操作使用者 Chrome，不新增自訂程式。
+
+
 **更新：2026-11-15（台灣時間）**。長期方向與每階段驗收門檻見 [八階段正式藍圖](ROADMAP_8_STAGES.md)；GitHub Issue 才是 Codex 可執行的工作授權，本文不是本機指令。
 
 ## 一、總目標與目前階段
